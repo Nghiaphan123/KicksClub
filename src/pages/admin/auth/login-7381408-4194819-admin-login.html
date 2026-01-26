@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KICKS Auth</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="auth.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Left Section with Sneaker Image -->
+    <div class="left-section">
+      <h1>KICKS</h1>
+    </div>
+
+    <!-- Right Section with Login/Register -->
+    <div class="right-section">
+      <div class="auth-box">
+        <!-- Login Form -->
+        <div class="login-container" id="login-container">
+          <h2>Login</h2>
+          <a href="#">Forgot your password?</a>
+          <form id="login-form">
+            <input type="email" placeholder="Email" required />
+            <input type="password" placeholder="Password" required />
+            <input type="submit" value="Login" />
+          </form>
+          <p>Don't have an account? 
+            <button class="toggle-btn" onclick="toggleForm('register')">Register</button>
+          </p>
+        </div>
+
+        <!-- Register Form -->
+        <div class="register-container hidden" id="register-container">
+          <h2>Register</h2>
+          <form id="register-form">
+            <input type="text" placeholder="Full Name" required />
+            <input type="email" placeholder="Email" required />
+            <input type="password" placeholder="Password" required />
+            <input type="password" placeholder="Confirm Password" required />
+            <input type="submit" value="Register" />
+          </form>
+          <p>Already have an account? 
+            <button class="toggle-btn" onclick="toggleForm('login')">Login</button>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

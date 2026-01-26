@@ -1,0 +1,161 @@
+
+/* ----------------------------------------
+Header 
+---------------------------------------- */
+
+.products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.products-header h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.add-product-btn {
+  padding: 10px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ----------------------------------------
+Product Grid 
+---------------------------------------- */
+
+.product-grid {
+  display: grid;
+  overflow-y: auto;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+
+/* ----------------------------------------
+Product Card(Item)
+---------------------------------------- */
+
+.product-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.product-header img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.product-header .info {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-header .info h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.product-header .info .category {
+  font-size: 14px;
+  color: #666;
+}
+
+.product-header .info .price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.product-description {
+  font-size: 14px;
+  margin: 10px 0;
+  color: #555;
+}
+
+.product-stats {
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ----------------------------------------
+Pagination 
+---------------------------------------- */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+
+  margin-top: auto; /* Pushes to bottom */
+  background-color: #fff; /* Optional styling */
+}
+
+.page-btn {
+  padding: 8px 12px;
+  border: 1px solid #444;
+  background-color: #f4f4f4;
+  color: #000;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.page-btn.active {
+  background-color: #444;
+  color: #fff;
+}
+
+
+/* ----------------------------------------
+Category 
+---------------------------------------- */
+
+.category-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.category-button span {
+  font-size: 16px;
+  color: #000;
+}
+
+.category-count {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.category-count.active {
+  background-color: skyblue;
+  color: #fff;
+  border-color: #007bff;
+}
