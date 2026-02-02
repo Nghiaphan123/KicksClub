@@ -128,10 +128,10 @@ Pagination
 
 
 /* ----------------------------------------
-Category 
+Brand
 ---------------------------------------- */
 
-.category-button {
+.brand-button {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -142,19 +142,19 @@ Category
   cursor: pointer;
 }
 
-.category-button span {
+.brand-button span {
   font-size: 16px;
   color: #000;
 }
 
-.category-count {
+.brand-count {
   padding: 4px 8px;
   border: 1px solid #ccc;
   background-color: #fff;
   border-radius: 4px;
 }
 
-.category-count.active {
+.brand-count.active {
   background-color: skyblue;
   color: #fff;
   border-color: #007bff;
