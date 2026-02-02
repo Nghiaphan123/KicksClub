@@ -1,5 +1,8 @@
 /* index.js - Đã cập nhật Logic Lọc Màu */
-
+// --- LẤY DỮ LIỆU SẢN PHẨM TỪ LOCAL STORAGE ---
+if (!localStorage.getItem('products')) {
+const products = JSON.parse(localStorage.getItem('products')) || [];
+}
 // --- 1. KHAI BÁO BIẾN TRẠNG THÁI ---
 let state = {
     filters: {
@@ -27,37 +30,46 @@ function renderProductDetail(product) {
         return `<div class="color-circle ${isSelected}" style="background-color: ${colorObj.hex};"></div>`;
     }).join('');
 
-    container.innerHTML = `
-        <div class="detail-image">
-            <span class="tag-badge">${product.tag}</span>
-            <img src="${product.image}" alt="${product.name}">
+  // ... (Code render colorsHtml và sizesHtml ở trên) ...
+
+container.innerHTML = `
+    <div class="detail-image">
+        <span class="tag-badge">${product.tag}</span>
+        <img src="${product.image}" alt="${product.name}">
+    </div>
+    <div class="detail-info">
+        <span style="color: #888; font-size: 14px; font-weight: 600; text-transform: uppercase;">Men's Shoes</span>
+        <h1>${product.name}</h1>
+        <span class="price">$${product.price.toFixed(2)}</span>
+        
+        <div style="margin-top: 20px;">
+            <span class="label">Color</span>
+            <div class="color-options">${colorsHtml}</div>
         </div>
-        <div class="detail-info">
-            <span style="color: #888; font-size: 14px; font-weight: 600; text-transform: uppercase;">Men's Shoes</span>
-            <h1>${product.name}</h1>
-            <span class="price">$${product.price.toFixed(2)}</span>
-            <div style="margin-top: 20px;">
-                <span class="label">Color</span>
-                <div class="color-options">${colorsHtml}</div>
+        
+        <div>
+            <div style="display:flex; justify-content:space-between;">
+                <span class="label">Select Size</span>
+                <span class="label" style="color:var(--primary-blue); cursor:pointer;">Size Chart</span>
             </div>
-            <div>
-                <div style="display:flex; justify-content:space-between;">
-                    <span class="label">Select Size</span>
-                    <span class="label" style="color:var(--primary-blue); cursor:pointer;">Size Chart</span>
-                </div>
-                <div class="size-grid">${sizesHtml}</div>
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-black">Add To Cart</button>
-                <button class="btn btn-fav"><i class="far fa-heart"></i></button>
-            </div>
-            <button class="btn btn-blue" style="width:100%">Buy It Now</button>
-            <div class="description">
-                ${product.description} <br><br>
-                This product is excluded from all promotional discounts and offers.
-            </div>
+            <div class="size-grid">${sizesHtml}</div>
         </div>
-    `;
+
+      <div class="btn-group">
+    <button id="btn-add-to-cart" class="btn btn-black">Add To Cart</button>
+    <button class="btn btn-fav"><i class="far fa-heart"></i></button>
+</div>
+<button id="btn-buy-now" class="btn btn-blue" style="width:100%">Buy It Now</button>
+        
+        <div class="description">
+            ${product.description} <br><br>
+            This product is excluded from all promotional discounts and offers.
+        </div>
+    </div>
+`;
+
+// --- PHẦN LOGIC QUAN TRỌNG CẦN THÊM NGAY SAU KHI GÁN INNERHTML ---
+handleAddToCartLogic(product);
     
     if(container) window.scrollTo({ behavior: 'smooth', top: container.offsetTop - 20 });
 }
@@ -210,8 +222,103 @@ function renderProductGrid() {
 
 // --- 6. KHỞI TẠO ---
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Cập nhật số trên giỏ hàng ngay khi vào web
+    updateCartIconCount();
+
+    // 2. Render dữ liệu
     if (typeof products !== 'undefined' && products.length > 0) {
         renderProductDetail(products[0]);
         renderProductGrid();
     }
 });
+
+/* ==========================================================
+   PHẦN LOGIC MỚI: XỬ LÝ GIỎ HÀNG & NÚT MUA HÀNG
+   (Dán đoạn này vào cuối file index.js)
+   ========================================================== */
+
+function handleAddToCartLogic(product) {
+    let selectedSize = null; // Biến lưu size người dùng chọn
+
+    // 1. Logic chọn Size (Click vào ô size nào thì ô đó sáng lên)
+    const sizeBtns = document.querySelectorAll('.size-btn');
+    sizeBtns.forEach(btn => {
+        // Bỏ qua nếu size bị disabled (hết hàng)
+        if (btn.classList.contains('disabled')) return; 
+
+        btn.addEventListener('click', function() {
+            // Xóa class 'selected' ở tất cả các nút khác
+            sizeBtns.forEach(b => b.classList.remove('selected'));
+            // Thêm class 'selected' vào nút vừa bấm
+            this.classList.add('selected');
+            // Lưu giá trị size
+            selectedSize = this.innerText; 
+        });
+    });
+
+    // 2. Hàm xử lý chung cho Add Cart và Buy Now
+    function addToCart(isBuyNow = false) {
+        // Validate: Bắt buộc chọn size
+        if (!selectedSize) {
+            alert("Please select a size first!");
+            return;
+        }
+
+        // Tạo object sản phẩm để lưu
+        const cartItem = {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            size: selectedSize,
+            // Lấy màu đầu tiên làm mặc định hoặc logic chọn màu nếu cần
+            color: product.colors && product.colors.length > 0 ? product.colors[0].name : "Standard", 
+            quantity: 1
+        };
+
+        // Lấy giỏ hàng từ LocalStorage
+        let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+
+        // Kiểm tra trùng lặp (Cùng ID và Size -> Tăng số lượng)
+        const existingItemIndex = cart.findIndex(item => item.id === cartItem.id && item.size === cartItem.size);
+
+        if (existingItemIndex !== -1) {
+            cart[existingItemIndex].quantity += 1;
+        } else {
+            cart.push(cartItem);
+        }
+
+        // Lưu lại vào LocalStorage
+        localStorage.setItem('shoppingCart', JSON.stringify(cart));
+
+        // Cập nhật số trên icon giỏ hàng ngay lập tức
+        updateCartIconCount();
+
+        // Điều hướng
+        if (isBuyNow) {
+            window.location.href = '../cart/cart.html'; // Chuyển sang trang Cart
+        } else {
+            alert("Added to cart successfully!");
+        }
+    }
+
+    // 3. Bắt sự kiện click cho 2 nút
+    const btnAdd = document.getElementById('btn-add-to-cart');
+    const btnBuy = document.getElementById('btn-buy-now');
+
+    if(btnAdd) btnAdd.addEventListener('click', () => addToCart(false));
+    if(btnBuy) btnBuy.addEventListener('click', () => addToCart(true));
+}
+
+// Hàm cập nhật số lượng trên icon giỏ hàng (Header)
+function updateCartIconCount() {
+    const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    
+    // Tìm phần tử hiển thị số (class .cart-count trong header HTML)
+    const countElement = document.querySelector('.cart-count');
+    if (countElement) {
+        countElement.innerText = totalItems;
+        countElement.style.display = totalItems > 0 ? 'inline-block' : 'none';
+    }
+}
