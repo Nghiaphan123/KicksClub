@@ -14,7 +14,8 @@ let products = [
       { val: 38, available: true }, { val: 39, available: false }, 
       { val: 40, available: true }, { val: 41, available: true }
     ],
-    description: "Shadow Navy / Army Green style for comfort."
+    description: "Shadow Navy / Army Green style for comfort.",
+    amount: 50
   },
   {
     id: 2,
@@ -22,7 +23,7 @@ let products = [
     brand: "Nike",
     price: 150.00,
     tag: "Best Seller",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [
       { name: "White/Black", hex: "#FFFFFF", selected: true },
       { name: "Red", hex: "#FF0000", selected: false }
@@ -31,7 +32,8 @@ let products = [
       { val: 40, available: true }, { val: 41, available: true }, 
       { val: 42, available: false }, { val: 43, available: true }
     ],
-    description: "Nike introducing the new air max for everyone's comfort."
+    description: "Nike introducing the new air max for everyone's comfort.",
+    amount: 50
   },
   {
     id: 3,
@@ -39,10 +41,11 @@ let products = [
     brand: "Jordan",
     price: 210.00,
     tag: "Trending",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "Blue/White", hex: "#4f6bf5", selected: true }],
     sizes: [{ val: 42, available: true }, { val: 43, available: true }],
-    description: "Classic silhouette with modern blue accents."
+    description: "Classic silhouette with modern blue accents.",
+    amount: 5
   },
   {
     id: 4,
@@ -50,10 +53,11 @@ let products = [
     brand: "Adidas",
     price: 230.00,
     tag: "Limited Edition",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "Cream White", hex: "#F5F5DC", selected: true }],
     sizes: [{ val: 36, available: true }, { val: 37, available: true }],
-    description: "Ultra-comfortable Boost technology."
+    description: "Ultra-comfortable Boost technology.",
+    amount: 50
   },
   {
     id: 5,
@@ -61,10 +65,11 @@ let products = [
     brand: "Puma",
     price: 110.00,
     tag: "Sale",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "Pastel Mix", hex: "#FFD1DC", selected: true }],
     sizes: [{ val: 38, available: true }, { val: 39, available: true }],
-    description: "Chunky sneaker style for everyday wear."
+    description: "Chunky sneaker style for everyday wear.",
+    amount: 50
   },
   {
     id: 6,
@@ -72,10 +77,11 @@ let products = [
     brand: "New Balance",
     price: 120.00,
     tag: "New Release",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "Green/White", hex: "#006400", selected: true }],
     sizes: [{ val: 40, available: true }, { val: 44, available: false }],
-    description: "Retro basketball inspired design."
+    description: "Retro basketball inspired design.",
+    amount: 50
   },
   {
     id: 7,
@@ -83,10 +89,11 @@ let products = [
     brand: "Converse",
     price: 85.00,
     tag: "Classic",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "Black", hex: "#000000", selected: true }],
     sizes: [{ val: 35, available: true }, { val: 45, available: true }],
-    description: "The timeless high-top sneaker."
+    description: "The timeless high-top sneaker.",
+    amount: 5
   },
   {
     id: 8,
@@ -94,10 +101,11 @@ let products = [
     brand: "Vans",
     price: 65.00,
     tag: "Essential",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "Black/White", hex: "#111111", selected: true }],
     sizes: [{ val: 39, available: true }, { val: 40, available: true }],
-    description: "Iconic sidestripe skate shoe."
+    description: "Iconic sidestripe skate shoe.",
+    amount: 50
   },
   {
     id: 9,
@@ -105,10 +113,11 @@ let products = [
     brand: "Asics",
     price: 160.00,
     tag: "Running",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "Deep Ocean", hex: "#000080", selected: true }],
     sizes: [{ val: 41, available: true }, { val: 42, available: true }],
-    description: "Maximum support and stability for runners."
+    description: "Maximum support and stability for runners.",
+    amount: 50
   },
   {
     id: 10,
@@ -116,10 +125,11 @@ let products = [
     brand: "Luxury",
     price: 950.00,
     tag: "High-End",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "Grey/Red/Blue", hex: "#808080", selected: true }],
     sizes: [{ val: 38, available: true }, { val: 42, available: true }],
-    description: "The pioneer of the chunky sneaker trend."
+    description: "The pioneer of the chunky sneaker trend.",
+    amount: 5
   },
   {
     id: 11,
@@ -127,10 +137,11 @@ let products = [
     brand: "Nike",
     price: 110.00,
     tag: "Hot Deal",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "White/Black", hex: "#FFFFFF", selected: true }],
     sizes: [{ val: 38, available: true }, { val: 43, available: false }],
-    description: "Most popular colorway for street style."
+    description: "Most popular colorway for street style.",
+    amount: 50
   },
   {
     id: 12,
@@ -138,10 +149,11 @@ let products = [
     brand: "Adidas",
     price: 190.00,
     tag: "New Release",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "Solar Red", hex: "#FF4500", selected: true }],
     sizes: [{ val: 40, available: true }, { val: 41, available: true }],
-    description: "The lightest Ultraboost ever made."
+    description: "The lightest Ultraboost ever made.",
+    amount: 5
   },
   {
     id: 13,
@@ -149,10 +161,11 @@ let products = [
     brand: "Reebok",
     price: 75.00,
     tag: "Vintage",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "Vintage White", hex: "#FAF9F6", selected: true }],
     sizes: [{ val: 42, available: true }, { val: 43, available: true }],
-    description: "Clean, minimalist 80s court style."
+    description: "Clean, minimalist 80s court style.",
+    amount: 5
   },
   {
     id: 14,
@@ -160,10 +173,11 @@ let products = [
     brand: "Salomon",
     price: 180.00,
     tag: "Outdoor",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "Ghost Grey", hex: "#D3D3D3", selected: true }],
     sizes: [{ val: 41, available: true }, { val: 42, available: true }],
-    description: "Technical footwear for trail and urban life."
+    description: "Technical footwear for trail and urban life.",
+    amount: 50
   },
   {
     id: 15,
@@ -171,10 +185,11 @@ let products = [
     brand: "Dr. Martens",
     price: 170.00,
     tag: "Iconic",
-    image: "../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.png",
     colors: [{ name: "Cherry Red", hex: "#8B0000", selected: true }],
     sizes: [{ val: 37, available: true }, { val: 41, available: true }],
-    description: "The original 8-eye leather boot."
+    description: "The original 8-eye leather boot.",
+    amount: 50
   },
   {
     id: 16,
@@ -182,10 +197,11 @@ let products = [
     brand: "On",
     price: 140.00,
     tag: "Comfort",
-    image: "../../res/images/products/winterKick.png",
+    image: "res/images/products/winterKick.png",
     colors: [{ name: "All Black", hex: "#000000", selected: true }],
     sizes: [{ val: 40, available: true }, { val: 45, available: true }],
-    description: "Swiss engineering for cloud-like steps."
+    description: "Swiss engineering for cloud-like steps.",
+    amount: 50
   },
   {
     id: 17,
@@ -193,10 +209,11 @@ let products = [
     brand: "New Balance",
     price: 200.00,
     tag: "Premium",
-    image: "../../res/images/products/winterKick.png",
+    image: "res/images/products/winterKick.png",
     colors: [{ name: "Grey", hex: "#A9A9A9", selected: true }],
     sizes: [{ val: 40, available: true }, { val: 41, available: true }],
-    description: "The standard for premium performance sneakers."
+    description: "The standard for premium performance sneakers.",
+    amount: 50
   },
   {
     id: 18,
@@ -204,10 +221,11 @@ let products = [
     brand: "Adidas",
     price: 100.00,
     tag: "Must-Have",
-    image: "../../res/images/products/winterKick.png",
+    image: "res/images/products/winterKick.png",
     colors: [{ name: "Cloud White", hex: "#FFFFFF", selected: true }],
     sizes: [{ val: 38, available: true }, { val: 39, available: true }],
-    description: "From indoor soccer to street icon."
+    description: "From indoor soccer to street icon.",
+    amount: 5
   },
   {
     id: 19,
@@ -215,10 +233,11 @@ let products = [
     brand: "Nike",
     price: 115.00,
     tag: "Essential",
-    image: "../../res/images/products/winterKick.png",
+    image: "res/images/products/winterKick.png",
     colors: [{ name: "Triple White", hex: "#FFFFFF", selected: true }],
     sizes: [{ val: 36, available: true }, { val: 46, available: true }],
-    description: "Basketball OG that redefined sneaker culture."
+    description: "Basketball OG that redefined sneaker culture.",
+    amount: 50
   },
   {
     id: 20,
@@ -226,12 +245,15 @@ let products = [
     brand: "Luxury",
     price: 550.00,
     tag: "Designer",
-    image: "../../res/images/products/winterKick.png",
+    image: "res/images/products/winterKick.png",
     colors: [{ name: "White/Pink", hex: "#FFC0CB", selected: true }],
     sizes: [{ val: 37, available: true }, { val: 41, available: true }],
-    description: "Virgil Abloh's take on a 80s tennis shoe."
+    description: "Virgil Abloh's take on a 80s tennis shoe.",
+    amount: 5
   }
 ];
+
+
 // Đẩy danh sách sản phẩm lên localStorage nếu chưa có
 if (!localStorage.getItem('products')) {
     localStorage.setItem('products', JSON.stringify(productItems));
@@ -241,29 +263,4 @@ if (!localStorage.getItem('products')) {
  * File này dùng để khởi tạo trạng thái ban đầu của trang web
  */
 
-window.onload = function() {
-    console.log("Trang web đã sẵn sàng!");
-
-    // 1. KIỂM TRA DỮ LIỆU
-    // Kiểm tra xem biến 'products' đã tồn tại chưa (tránh lỗi ReferenceError)
-    if (typeof productItems === 'undefined') {
-        console.error("Lỗi: Không tìm thấy biến 'products'. Hãy kiểm tra lại file data hoặc thứ tự nhúng script.");
-        return;
-    }
-
-    // 2. KHỞI TẠO GIAO DIỆN
-    try {
-        // Render sản phẩm đầu tiên lên phần chi tiết (Upper section)
-        // Mặc định lấy sản phẩm index 0
-        if (productItems.length > 0) {
-            renderProductDetail(productItems[0]);
-        }
-
-        // Render toàn bộ danh sách sản phẩm xuống lưới (Lower section)
-        renderProductGrid();
-        
-        console.log("Khởi tạo dữ liệu thành công!");
-    } catch (error) {
-        console.error("Đã xảy ra lỗi trong quá trình render:", error);
-    }
-};
+export default products;
