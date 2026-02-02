@@ -55,17 +55,18 @@ function openEditPanel(item) {
 	const panel = document.createElement("div");
 	panel.className = "edit-panel";
 
-	// Build color inputs
+	// Build color inputs (still editable by name)
 	const colorInputs = item.colors.map((c, i) => `
 		<label>Color ${i + 1}:
 			<input type="text" value="${c.name}" class="edit-color" data-index="${i}" />
 		</label>
 	`).join("");
 
-	// Build size inputs
+	// Build size checkboxes
 	const sizeInputs = item.sizes.map((s, i) => `
-		<label>Size ${i + 1}:
-			<input type="number" value="${s.val}" class="edit-size" data-index="${i}" />
+		<label>
+			<input type="checkbox" class="edit-size" data-index="${i}" ${s.available ? "checked" : ""} />
+			Size ${s.val}
 		</label>
 	`).join("");
 
@@ -112,10 +113,10 @@ function openEditPanel(item) {
 			item.colors[idx].name = input.value;
 		});
 
-		// Update sizes
+		// Update sizes availability
 		document.querySelectorAll(".edit-size").forEach(input => {
 			const idx = parseInt(input.dataset.index, 10);
-			item.sizes[idx].val = parseInt(input.value, 10);
+			item.sizes[idx].available = input.checked;
 		});
 
 		// Save back to localStorage
