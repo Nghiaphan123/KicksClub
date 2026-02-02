@@ -253,15 +253,6 @@ let products = [
   }
 ];
 
-// Ensure every product has at least 50 units in stock and add 10 units to each product
-products = products.map(product => {
-    if (!product.amount || product.amount < 50) {
-        product.amount = 50;
-    }
-    product.amount += 10;
-    alert(`Product: ${product.name} now has ${product.amount} units in stock.`);
-    return product;
-});
 
 // Đẩy danh sách sản phẩm lên localStorage nếu chưa có
 if (!localStorage.getItem('products')) {
