@@ -387,4 +387,5 @@ let users = [
 // Đẩy danh sách người dùng lên localStorage nếu chưa có
 if (!localStorage.getItem('users')) {
   localStorage.setItem('users', JSON.stringify(users));
+  console.log("Đã khởi tạo dữ liệu người dùng trong localStorage.");
 }
