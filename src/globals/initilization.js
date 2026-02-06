@@ -289,3 +289,90 @@ window.onload = function() {
         console.error("Đã xảy ra lỗi trong quá trình render:", error);
     }
 };
+
+let users = [
+  {
+    id: 1,
+    name: "Nguyễn Văn An",
+    email: "nguyenvanan.99@gmail.com",
+    phone: "0909123456",
+    password: "12345",
+    role: "customer",
+    status: "active",
+    // Người này có 2 địa chỉ
+    address: [
+      {
+        id: "addr_1",
+        type: "Nhà riêng",
+        content: "Số 123 Đường Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh",
+        isDefault: true // Địa chỉ mặc định
+      },
+      {
+        id: "addr_2",
+        type: "Công ty",
+        content: "Tòa nhà Landmark 81, Quận Bình Thạnh, TP. Hồ Chí Minh",
+        isDefault: false
+      }
+    ],
+    cart: [],
+    orders: [] 
+  },
+  {
+    id: 2,
+    name: "Trần Thị Bích",
+    email: "bichtran.design@gmail.com",
+    phone: "0988765432",
+    password: "12345",
+    role: "customer",
+    status: "banned",
+    // Người này có 1 địa chỉ
+    address: [
+      {
+        id: "addr_3",
+        type: "Nhà riêng",
+        content: "Ngõ 105 Láng Hạ, Quận Đống Đa, Hà Nội",
+        isDefault: true
+      }
+    ],
+    cart: [],
+    orders: []
+  },
+  {
+    id: 3,
+    name: "Lê Hoàng Nam",
+    email: "nam.lehoang@techcorp.vn",
+    phone: "0912345678",
+    password: "12345",
+    role: "admin",
+    status: "active",
+    // Admin cũng có 1 địa chỉ
+    address: [
+      {
+        id: "addr_4",
+        type: "Văn phòng",
+        content: "78 Đường Bạch Đằng, Quận Hải Châu, Đà Nẵng",
+        isDefault: true
+      }
+    ],
+    cart: [],
+    orders: []
+  },
+  {
+    id: 4,
+    name: "Phạm Minh Tuấn",
+    email: "tuanpham123@yahoo.com.vn",
+    phone: "0356789123",
+    password: "12345",
+    role: "customer",
+    status: "active",
+    // TÀI KHOẢN NÀY CHƯA CÓ ĐỊA CHỈ (Mảng rỗng)
+    address: [], 
+    cart: [],
+    orders: []
+  }
+];
+
+// Đẩy danh sách người dùng lên localStorage nếu chưa có
+if (!localStorage.getItem('users')) {
+  localStorage.setItem('users', JSON.stringify(users));
+}
