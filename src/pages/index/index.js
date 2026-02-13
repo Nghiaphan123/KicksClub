@@ -322,3 +322,145 @@ function updateCartIconCount() {
         countElement.style.display = totalItems > 0 ? 'inline-block' : 'none';
     }
 }
+// Dữ liệu mẫu cho phần New Drops (4 sản phẩm mới nhất)
+
+
+// Hàm Render
+const newDropsData = products.slice(0, 4);
+function renderNewDrops() {
+    const container = document.getElementById('new-drops-grid');
+    if (!container) return;
+
+    let html = '';
+    
+    newDropsData.forEach(item => {
+        // Tạo thẻ div tạm để gán sự kiện click dễ dàng hơn
+        const card = document.createElement('div');
+        card.className = 'drop-card';
+        
+        card.innerHTML = `
+            <div class="drop-image-wrap">
+                <span class="drop-tag">New</span>
+                <img src="${item.image}" alt="${item.name}">
+            </div>
+            <div class="drop-title">${item.name}</div>
+            <button class="btn-drop-view">
+                VIEW PRODUCT - <span>$${item.price}</span>
+            </button>
+        `;
+
+        // GẮN SỰ KIỆN CLICK: Khi bấm vào nút "VIEW PRODUCT"
+        const btnView = card.querySelector('.btn-drop-view');
+        btnView.addEventListener('click', () => {
+            // 1. Gọi hàm render chi tiết sản phẩm (Hàm này đã có sẵn trong index.js của bạn)
+            renderProductDetail(item);
+            
+            // 2. Cuộn màn hình lên vị trí khung chi tiết để người dùng thấy ngay
+            const detailSection = document.getElementById('product-detail-section');
+            if(detailSection) {
+                detailSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+
+        // Gắn sự kiện click cho cả cái ảnh (cho tiện)
+        const imgWrap = card.querySelector('.drop-image-wrap');
+        imgWrap.addEventListener('click', () => {
+            renderProductDetail(item);
+            const detailSection = document.getElementById('product-detail-section');
+            if(detailSection) detailSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        // Thêm card vào container (Không dùng innerHTML += để giữ được event listener)
+        container.appendChild(card);
+    });
+}
+
+// Gọi hàm khi trang load
+document.addEventListener('DOMContentLoaded', () => {
+    // ... các hàm khởi tạo khác ...
+    renderNewDrops();
+});
+
+// Side Panel
+/* --- LOGIC SIDE CART DRAWER --- */
+
+// 1. Hàm mở Drawer & Render dữ liệu
+function openCartDrawer() {
+    const drawer = document.getElementById('cart-drawer');
+    const overlay = document.getElementById('cart-overlay');
+    
+    // Thêm class để kích hoạt CSS trượt
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    
+    // Render dữ liệu mới nhất từ LocalStorage
+    renderDrawerItems();
+}
+
+// 2. Hàm đóng Drawer
+function closeCartDrawer() {
+    document.getElementById('cart-drawer').classList.remove('open');
+    document.getElementById('cart-overlay').classList.remove('open');
+}
+
+// 3. Hàm Render sản phẩm (Giống mini cart)
+function renderDrawerItems() {
+    const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    const container = document.getElementById('drawer-items');
+    const countEl = document.getElementById('drawer-count');
+    const totalEl = document.getElementById('drawer-total');
+
+    // Cập nhật số lượng trên header
+    if(countEl) countEl.innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+    // Tính tổng tiền
+    let subtotal = 0;
+    
+    if (cart.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#888; margin-top:50px;">Your bag is empty.</p>';
+        if(totalEl) totalEl.innerText = "$0.00";
+        return;
+    }
+
+    let html = '';
+    cart.forEach(item => {
+        subtotal += item.price * item.quantity;
+        const imgSrc = item.image ? item.image : 'https://via.placeholder.com/150';
+        
+        html += `
+        <div class="drawer-item">
+            <div class="d-item-img">
+                <img src="${imgSrc}" alt="${item.name}">
+            </div>
+            <div class="d-item-info">
+                <div class="d-item-name">${item.name}</div>
+                <span class="d-item-meta">Size: ${item.size} | Qty: ${item.quantity}</span>
+                <span class="d-item-price">$${(item.price * item.quantity).toFixed(2)}</span>
+            </div>
+            <div class="d-item-remove" style="cursor:pointer;" onclick="removeDrawerItem(${item.id}, '${item.size}')">
+                <i class="far fa-trash-alt" style="color:#999; font-size:14px;"></i>
+            </div>
+        </div>
+        `;
+    });
+
+    container.innerHTML = html;
+    if(totalEl) totalEl.innerText = `$${subtotal.toFixed(2)}`;
+}
+
+// 4. Hàm xóa item trực tiếp từ Drawer
+function removeDrawerItem(id, size) {
+    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    
+    // Lọc bỏ sản phẩm có id và size tương ứng
+    // Lưu ý: Logic tìm index chính xác hơn splice nếu có id trùng
+    const index = cart.findIndex(item => item.id === id && item.size == size);
+    if(index !== -1) {
+        cart.splice(index, 1);
+        localStorage.setItem('shoppingCart', JSON.stringify(cart));
+        
+        // Render lại drawer và cập nhật số lượng icon giỏ hàng
+        renderDrawerItems();
+        updateCartIconCount(); // Hàm này bạn đã có trong index.js cũ
+    }
+}

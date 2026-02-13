@@ -15,7 +15,7 @@
     <div class="container">
         <header>
             <nav class="nav-links">
-                <a href="#">New Drops 🔥</a>
+                <a href="#" onclick="document.getElementById('product-detail-section').scrollIntoView({behavior: 'smooth'})">New Drops 🔥</a>
                 <a href="#">Men ▾</a>
                 <a href="#">Women ▾</a>
             </nav>
@@ -53,6 +53,17 @@
                 </div>
             </div>
         </div>
+    <!-- Thumbnail -->
+        <section class="new-drops-section">
+    <div class="container">
+        <div class="new-drops-header">
+            <h2 class="section-title">DON’T MISS OUT<br>NEW DROPS</h2>
+            <a href="#" class="btn-shop-new">SHOP NEW DROPS</a>
+        </div>
+
+        <div id="new-drops-grid" class="new-drops-grid"></div>
+    </div>
+</section>
         <!-- Product Detail Section -->
     </div> 
          <section id="product-detail-section"></section>
@@ -115,6 +126,7 @@
         </div>
     </div>
 </aside>
+
     <!-- Main List Content -->
     <main class="main-content">
         <div class="content-header">
@@ -129,6 +141,77 @@
             </div>
     </main>
 </div>
+
+<!-- Footer -->
+ <footer class="footer-section">
+    
+    <div class="newsletter-wrap">
+        <div class="container newsletter-inner">
+            <div class="newsletter-content">
+                <h2>JOIN OUR KICKSPLUS CLUB & GET 15% OFF</h2>
+                <p>Sign up for free! Join the community.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Email address" class="email-input">
+                    <button class="btn-submit">SUBMIT</button>
+                </div>
+            </div>
+            <div class="newsletter-logo">
+                <span class="logo-text">KICKS</span>
+                <span class="logo-plus">+</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-main-wrap">
+        <div class="container footer-inner">
+            <div class="footer-grid">
+                <div class="footer-col about-col">
+                    <h3>About us</h3>
+                    <p>We are the biggest hyperstore in the universe. We got you all cover with our exclusive collections and latest drops.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Categories</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Runners</a></li>
+                        <li><a href="#">Sneakers</a></li>
+                        <li><a href="#">Basketball</a></li>
+                        <li><a href="#">Outdoor</a></li>
+                        <li><a href="#">Golf</a></li>
+                        <li><a href="#">Hiking</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Blogs</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Follow us</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="big-footer-text">KICKS</div>
+            
+            <div class="copyright">
+                © All rights reserved | Made with ❤️ by Visiata Systems International
+            </div>
+        </div>
+    </div>
+</footer>
+
+
     <script src="../../globals/initilization.js"></script>
     <script src="index.js"></script>
 </body>

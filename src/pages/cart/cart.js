@@ -1,244 +1,231 @@
+/* file: src/pages/cart/cart.js */
+
 document.addEventListener('DOMContentLoaded', () => {
-    renderCart();
-    updateCartIconCount(); // Optional: if you have a cart icon in the header
+    renderCart();      // Vẽ giỏ hàng chính
+    updateCartSummary(); // Cập nhật tổng tiền
+
+    // Gắn sự kiện cho nút Checkout (Mở Slide)
+    const btnCheckout = document.querySelector('.btn-checkout');
+    if (btnCheckout) {
+        btnCheckout.addEventListener('click', openCheckoutSlide);
+    }
 });
 
-// Function to format currency
-const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(price);
-};
+/* =========================================
+   PHẦN 1: LOGIC GIỎ HÀNG (MAIN CART)
+   ========================================= */
 
 function renderCart() {
-    // 1. Get cart data from LocalStorage
-    // Key must match what you used in index.js ('shoppingCart')
-    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
-    
-    const cartContainer = document.querySelector('.cart-items-container'); // You need to add this class to your HTML wrapper for items
-    const summaryContainer = document.querySelector('.cart-summary-section');
-    
-    // Elements for Summary
-    const totalItemsEl = document.getElementById('summary-total-items');
-    const totalPriceEl = document.getElementById('summary-total-price');
-    const finalTotalEl = document.getElementById('summary-final-total');
+    const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    const container = document.querySelector('.cart-items-container');
+    const emptyMsg = document.querySelector('.cart-header p');
 
-    // 2. Handle Empty Cart
+    if (!container) return;
+    container.innerHTML = '';
+
     if (cart.length === 0) {
-        if (cartContainer) {
-            cartContainer.innerHTML = `
-                <div class="empty-cart-msg">
-                    <h3>Your bag is empty</h3>
-                    <p>Start adding some kicks to your collection.</p>
-                    <a href="../index/index.html">Go Shopping</a>
-                </div>
-            `;
-        }
-        // Update summary to zero
-        if(totalItemsEl) totalItemsEl.innerText = "0 ITEMS";
-        if(totalPriceEl) totalPriceEl.innerText = "$0.00";
-        if(finalTotalEl) finalTotalEl.innerText = "$0.00";
+        container.innerHTML = `
+            <div style="text-align:center; padding: 40px;">
+                <h3>Your bag is empty</h3>
+                <a href="../index/index.html" style="color:#4f6bf5; text-decoration:underline; font-weight:bold;">Go Shopping</a>
+            </div>`;
+        if (emptyMsg) emptyMsg.style.display = 'none';
+        updateCartSummary();
         return;
     }
 
-    // 3. Render Cart Items
-    if (cartContainer) {
-        let html = '';
-        let subtotal = 0;
-        let totalItems = 0;
+    if (emptyMsg) emptyMsg.style.display = 'block';
 
-        cart.forEach((item, index) => {
-            // Calculate item totals
-            const itemTotal = item.price * item.quantity;
-            subtotal += itemTotal;
-            totalItems += item.quantity;
-
-            // Default image if missing (error handling)
-            const imgSrc = item.image ? item.image : 'https://via.placeholder.com/150';
-
-            html += `
-            <div class="cart-item">
-                <div class="cart-item-img">
-                    <img src="${imgSrc}" alt="${item.name}">
+    cart.forEach((item, index) => {
+        const imgSrc = item.image ? item.image : 'https://via.placeholder.com/150';
+        const html = `
+        <div class="cart-item">
+            <div class="cart-item-img">
+                <img src="${imgSrc}" alt="${item.name}">
+            </div>
+            <div class="cart-item-info">
+                <div class="item-header">
+                    <span class="item-title">${item.name}</span>
+                    <span class="item-price">$${item.price.toFixed(2)}</span>
                 </div>
+                <span class="item-subtitle">Size: ${item.size}</span>
+                <span class="item-subtitle">Color: ${item.color || 'Standard'}</span>
                 
-                <div class="cart-item-info">
-                    <div class="item-top-row">
-                        <span class="item-title">${item.name}</span>
-                        <span class="item-price">${formatPrice(item.price)}</span>
+                <div class="item-controls">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <label>Qty:</label>
+                        <select class="cart-select" onchange="updateQuantity(${index}, this.value)">
+                            ${renderQtyOptions(item.quantity)}
+                        </select>
                     </div>
-                    
-                    <span class="item-subtitle">Men's Road Running Shoes</span>
-                    <span class="item-subtitle">${item.color || 'Standard Color'}</span>
-                    
-                    <div class="item-controls">
-                        <div class="control-group">
-                            <label>Size</label>
-                            <select class="cart-select" onchange="updateItemSize(${index}, this.value)">
-                                <option value="${item.size}" selected>${item.size}</option>
-                                </select>
-                        </div>
+                </div>
 
-                        <div class="control-group">
-                            <label>Quantity</label>
-                            <select class="cart-select" onchange="updateItemQuantity(${index}, this.value)">
-                                ${generateQuantityOptions(item.quantity)}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="item-actions">
-                        <i class="far fa-heart action-icon" title="Move to Favorites"></i>
-                        <i class="far fa-trash-alt action-icon" onclick="removeItem(${index})" title="Remove"></i>
-                    </div>
+                <div class="cart-actions">
+                    <i class="fa-regular fa-trash-can action-icon" onclick="removeItem(${index})" title="Remove"></i>
                 </div>
             </div>
-            `;
-        });
-
-        cartContainer.innerHTML = html;
-
-        // 4. Update Order Summary
-        const shipping = 6.99;
-        const total = subtotal + shipping;
-
-        if(totalItemsEl) totalItemsEl.innerText = `${totalItems} ITEM${totalItems > 1 ? 'S' : ''}`;
-        if(totalPriceEl) totalPriceEl.innerText = formatPrice(subtotal);
-        if(finalTotalEl) finalTotalEl.innerText = formatPrice(total);
-    }
+        </div>`;
+        container.innerHTML += html;
+    });
 }
 
-// Helper to generate quantity dropdown options (1-10)
-function generateQuantityOptions(currentQty) {
+function renderQtyOptions(selected) {
     let options = '';
     for (let i = 1; i <= 10; i++) {
-        options += `<option value="${i}" ${i == currentQty ? 'selected' : ''}>${i}</option>`;
+        options += `<option value="${i}" ${i == selected ? 'selected' : ''}>${i}</option>`;
     }
     return options;
 }
 
-// Function to remove item
+function updateQuantity(index, newQty) {
+    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    cart[index].quantity = parseInt(newQty);
+    localStorage.setItem('shoppingCart', JSON.stringify(cart));
+    renderCart();
+    updateCartSummary();
+}
+
 function removeItem(index) {
     let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
-    cart.splice(index, 1); // Remove item at index
+    cart.splice(index, 1);
     localStorage.setItem('shoppingCart', JSON.stringify(cart));
-    
-    // Re-render
     renderCart();
-    updateCartIconCount();
+    updateCartSummary();
 }
 
-// Function to update quantity
-function updateItemQuantity(index, newQty) {
-    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
-    if (cart[index]) {
-        cart[index].quantity = parseInt(newQty);
-        localStorage.setItem('shoppingCart', JSON.stringify(cart));
-        renderCart();
-        updateCartIconCount();
-    }
-}
-
-// Function to update cart icon count in header (optional)
-function updateCartIconCount() {
+function updateCartSummary() {
     const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const countBadge = document.querySelector('.cart-count'); // Make sure your header has this class
-    if (countBadge) {
-        countBadge.innerText = totalItems;
-        countBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
-    }
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const shipping = cart.length > 0 ? 6.99 : 0;
+    const total = subtotal + shipping;
+
+    // Cập nhật giao diện Main Cart
+    const elItems = document.getElementById('summary-total-items');
+    const elPrice = document.getElementById('summary-total-price');
+    const elTotal = document.getElementById('summary-final-total');
+
+    if (elItems) elItems.innerText = `${totalItems} ITEMS`;
+    if (elPrice) elPrice.innerText = `$${subtotal.toFixed(2)}`;
+    if (elTotal) elTotal.innerText = `$${total.toFixed(2)}`;
 }
 
-// --- LOGIC THANH TOÁN (CHECKOUT) ---
 
-// 1. Hàm tạo mã đơn hàng ngẫu nhiên (Ví dụ: #ORD-1709283021-999)
-function generateOrderId() {
-    const timestamp = Date.now();
-    const randomNum = Math.floor(Math.random() * 1000);
-    return `ORD-${timestamp}-${randomNum}`;
-}
+/* =========================================
+   PHẦN 2: LOGIC CHECKOUT SLIDE & THANH TOÁN
+   ========================================= */
 
-// 2. Hàm xử lý sự kiện khi bấm nút Checkout
-function handleCheckout() {
-    // A. Lấy dữ liệu giỏ hàng
+// 1. Mở Slide Checkout (Thay vì alert ngay)
+function openCheckoutSlide() {
     const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
-
-    // B. Kiểm tra giỏ hàng trống
+    
     if (cart.length === 0) {
-        alert("Giỏ hàng của bạn đang trống! Hãy mua sắm thêm nhé.");
+        alert("Your bag is empty!");
         return;
     }
 
-    // C. Lấy thông tin người dùng hiện tại (Giả sử đã lưu lúc đăng nhập)
-    // Nếu chưa làm đăng nhập, ta lấy tạm user đầu tiên hoặc user ID = 5 (Hoàng Văn Thái)
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    // Render danh sách sản phẩm nhỏ bên trong Slide
+    renderCheckoutMiniItems(cart);
     
-    // Fallback: Nếu không có ai đăng nhập, ta lấy user ID 1 làm mặc định để test
-    if (!currentUser) {
-        // Lấy danh sách users gốc để tìm
-        const users = JSON.parse(localStorage.getItem('users')) || []; 
-        currentUser = users.find(u => u.id === 1) || { id: 1, name: "Khách vãng lai" };
-    }
+    // Hiển thị Panel
+    document.getElementById('checkout-panel').classList.add('active');
+    document.body.style.overflow = 'hidden'; // Khóa cuộn trang chính
+}
 
-    // D. Tính toán tổng tiền
-    const shipping = 6.99;
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+// 2. Đóng Slide Checkout
+function closeCheckout() {
+    document.getElementById('checkout-panel').classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+// 3. Render sản phẩm trong Slide (Mini list)
+function renderCheckoutMiniItems(cart) {
+    const container = document.getElementById('checkout-items-list');
+    if(!container) return;
+    
+    let subtotal = 0;
+    let html = '';
+
+    cart.forEach(item => {
+        subtotal += item.price * item.quantity;
+        const imgSrc = item.image ? item.image : 'https://via.placeholder.com/150';
+        html += `
+            <div class="co-item">
+                <div class="co-img">
+                    <img src="${imgSrc}" alt="${item.name}">
+                </div>
+                <div class="co-info">
+                    <div class="co-name">${item.name}</div>
+                    <span class="co-sub">Size: ${item.size} | Qty: ${item.quantity}</span>
+                    <span class="co-price">$${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+
+    // Cập nhật giá tiền trong Slide
+    const shipping = 6.00;
     const total = subtotal + shipping;
 
-    // E. TẠO OBJECT ORDER (QUAN TRỌNG)
+    document.getElementById('co-total-items').innerText = `${cart.length} ITEMS`;
+    document.getElementById('co-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+    document.getElementById('co-final-total').innerText = `$${total.toFixed(2)}`;
+}
+
+// 4. Hàm tạo ID Đơn hàng (Unique)
+function generateOrderId() {
+    // ID dạng: ORD-timestamp-sốngẫunhhiên (VD: ORD-17023456789-123)
+    return 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+}
+
+// 5. XỬ LÝ THANH TOÁN CUỐI CÙNG (Nút "REVIEW AND PAY")
+function processPayment() {
+    // A. Lấy user hiện tại
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        currentUser = users.find(u => u.id === 1) || { id: 1, name: "Guest" };
+    }
+
+    // B. Lấy thông tin giỏ hàng & tính tiền
+    const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const total = subtotal + 6.00; // Shipping
+
+    // C. Tạo Object Order
     const newOrder = {
-        orderId: generateOrderId(),      // ID riêng biệt
-        userId: currentUser.id,          // ID người mua
-        customerName: currentUser.name,  // Tên người mua (lưu cứng để tiện tra cứu)
-        date: new Date().toISOString(),  // Thời gian mua
-        items: cart,                     // Toàn bộ sản phẩm trong giỏ biến thành items của đơn hàng
+        orderId: generateOrderId(),
+        userId: currentUser.id,
+        customerName: currentUser.name,
+        email: document.getElementById('checkout-email')?.value || currentUser.email || "No Email",
+        date: new Date().toISOString(),
+        items: cart,
         totalPrice: total,
-        status: "Pending",               // Trạng thái mặc định: Chờ xử lý
-        shippingAddress: "Địa chỉ mặc định" // (Có thể update logic lấy địa chỉ sau)
+        status: 'Pending',
+        shippingAddress: "Standard Delivery Address" 
     };
 
-    // F. LƯU ĐƠN HÀNG (2 Nơi)
-
-    // Nơi 1: Lưu vào danh sách tổng tất cả đơn hàng (dành cho Admin xem)
+    // D. Lưu vào danh sách chung (Admin)
     const allOrders = JSON.parse(localStorage.getItem('allOrders')) || [];
     allOrders.push(newOrder);
     localStorage.setItem('allOrders', JSON.stringify(allOrders));
 
-    // Nơi 2: Cập nhật vào mảng 'users' (Lưu vào lịch sử mua hàng của người đó)
-    // (Bước này quan trọng để đồng bộ dữ liệu người dùng)
+    // E. Lưu vào lịch sử User
     let usersList = JSON.parse(localStorage.getItem('users')) || [];
     const userIndex = usersList.findIndex(u => u.id === currentUser.id);
-    
     if (userIndex !== -1) {
-        // Nếu tìm thấy user, push order vào mảng orders của họ
-        if (!usersList[userIndex].orders) {
-            usersList[userIndex].orders = [];
-        }
+        if (!usersList[userIndex].orders) usersList[userIndex].orders = [];
         usersList[userIndex].orders.push(newOrder);
-        // Lưu ngược lại danh sách users
         localStorage.setItem('users', JSON.stringify(usersList));
     }
 
-    // G. XÓA GIỎ HÀNG & THÔNG BÁO
-    localStorage.removeItem('shoppingCart'); // Xóa key giỏ hàng
+    // F. Dọn dẹp & Thông báo
+    localStorage.removeItem('shoppingCart'); // Xóa giỏ hàng
+    closeCheckout(); // Đóng slide
+    renderCart(); // Render lại trang cart (giờ đã trống)
     
-    // Render lại giao diện giỏ hàng (để nó hiện trống trơn)
-    renderCart();
-    updateCartIconCount();
-
-    // Thông báo và chuyển trang (nếu có trang Thank You)
-    alert(`Đặt hàng thành công!\nMã đơn hàng của bạn là: ${newOrder.orderId}\nTổng tiền: $${total.toFixed(2)}`);
-    
-    // window.location.href = '../orders/orders.html'; // Bỏ comment dòng này nếu bạn có trang lịch sử đơn hàng
+    // Thông báo đẹp
+    alert(`🎉 THANH TOÁN THÀNH CÔNG!\n\nMã đơn hàng: ${newOrder.orderId}\nTổng tiền: $${total.toFixed(2)}\n\nCảm ơn bạn đã mua hàng tại KICKS!`);
 }
-
-// 3. GẮN SỰ KIỆN CHO NÚT CHECKOUT
-// Đợi DOM load xong mới tìm nút
-document.addEventListener('DOMContentLoaded', () => {
-    const checkoutBtn = document.querySelector('.btn-checkout');
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', handleCheckout);
-    }
-});

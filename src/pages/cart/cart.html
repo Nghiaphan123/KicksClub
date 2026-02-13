@@ -7,7 +7,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-     <link rel="stylesheet" href="../index/index.css">
+    <link rel="stylesheet" href="../index/index.css">
     <link rel="stylesheet" href="cart.css"> 
    
 </head>
@@ -81,6 +81,155 @@
 
         </div>
     </div> 
+
+    <!-- footer -->
+     
+<!-- Footer -->
+ <footer class="footer-section">
+    
+    <div class="newsletter-wrap">
+        <div class="container newsletter-inner">
+            <div class="newsletter-content">
+                <h2>JOIN OUR KICKSPLUS CLUB & GET 15% OFF</h2>
+                <p>Sign up for free! Join the community.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Email address" class="email-input">
+                    <button class="btn-submit">SUBMIT</button>
+                </div>
+            </div>
+            <div class="newsletter-logo">
+                <span class="logo-text">KICKS</span>
+                <span class="logo-plus">+</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-main-wrap">
+        <div class="container footer-inner">
+            <div class="footer-grid">
+                <div class="footer-col about-col">
+                    <h3>About us</h3>
+                    <p>We are the biggest hyperstore in the universe. We got you all cover with our exclusive collections and latest drops.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Categories</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Runners</a></li>
+                        <li><a href="#">Sneakers</a></li>
+                        <li><a href="#">Basketball</a></li>
+                        <li><a href="#">Outdoor</a></li>
+                        <li><a href="#">Golf</a></li>
+                        <li><a href="#">Hiking</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Blogs</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Follow us</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="big-footer-text">KICKS</div>
+            
+            <div class="copyright">
+                © All rights reserved | Made with ❤️ by Visiata Systems International
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div id="checkout-panel" class="checkout-panel">
+    <div class="checkout-container">
+        
+        <div class="checkout-header">
+            <div class="back-btn" onclick="closeCheckout()">
+                <i class="fas fa-arrow-left"></i> Back
+            </div>
+            <div class="checkout-logo">KICKS</div>
+            <div style="width: 50px;"></div> </div>
+
+        <div class="checkout-body">
+            <div class="checkout-form-section">
+                <h3>Login and Checkout faster</h3>
+                
+                <div class="form-group">
+                    <h4>Contact Details</h4>
+                    <p class="sub-text">We will use these details to keep you inform about your delivery.</p>
+                    <input type="email" class="input-field" placeholder="Email" id="checkout-email">
+                </div>
+
+                <div class="form-group">
+                    <h4>Shipping Address</h4>
+                    <div class="row-inputs">
+                        <input type="text" class="input-field" placeholder="First Name*">
+                        <input type="text" class="input-field" placeholder="Last Name*">
+                    </div>
+                    <input type="text" class="input-field" placeholder="Find Delivery Address*">
+                    <input type="text" class="input-field" placeholder="Phone Number*">
+                </div>
+
+                <div class="form-group">
+                    <h4>Delivery Options</h4>
+                    <div class="delivery-option selected">
+                        <div class="d-info">
+                            <span class="d-title">Standard Delivery</span>
+                            <span class="d-desc">Enter your address to see when you'll get your order</span>
+                        </div>
+                        <span class="d-price">$6.00</span>
+                    </div>
+                    <div class="delivery-option">
+                        <div class="d-info">
+                            <span class="d-title">Collect in store</span>
+                            <span class="d-desc">Pay now, collect in store</span>
+                        </div>
+                        <span class="d-price">Free</span>
+                    </div>
+                </div>
+
+                <button class="btn-pay" onclick="processPayment()">REVIEW AND PAY</button>
+            </div>
+
+            <div class="checkout-summary-section">
+                <div class="summary-card">
+                    <h4>Order Summary</h4>
+                    <div class="summary-row">
+                        <span id="co-total-items">0 ITEM</span>
+                        <span id="co-subtotal">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery</span>
+                        <span>$6.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span id="co-final-total">$0.00</span>
+                    </div>
+                </div>
+
+                <div class="details-card">
+                    <h4>Order Details</h4>
+                    <div id="checkout-items-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     <script src="cart.js"></script>
 </body>
 </html>

@@ -257,3 +257,129 @@
         justify-content: center;
     }
 }
+
+/* === CHECKOUT SLIDE PANEL CSS === */
+.checkout-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #eaeaea; /* Màu nền xám nhạt */
+    z-index: 9999;
+    overflow-y: auto; /* Cho phép cuộn */
+    
+    /* Hiệu ứng trượt */
+    transform: translateX(100%);
+    transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.checkout-panel.active {
+    transform: translateX(0); /* Trượt vào */
+}
+
+.checkout-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.checkout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding: 10px 0;
+}
+.checkout-logo { font-weight: 900; font-size: 24px; letter-spacing: 2px; }
+.back-btn { cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+.back-btn:hover { color: #4f6bf5; }
+
+/* Body Layout */
+.checkout-body {
+    display: flex;
+    gap: 60px;
+}
+
+/* Left Column: Forms */
+.checkout-form-section { flex: 1.5; }
+.checkout-form-section h3 { margin-bottom: 30px; }
+.checkout-form-section h4 { font-size: 18px; font-weight: 700; margin-bottom: 15px; margin-top: 30px; }
+.sub-text { font-size: 13px; color: #666; margin-bottom: 15px; }
+
+.input-field {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: transparent;
+    font-family: inherit;
+    outline: none;
+}
+.row-inputs { display: flex; gap: 15px; }
+
+/* Delivery Options */
+.delivery-option {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+.delivery-option.selected { border: 2px solid #222; background: #fff; }
+.d-info { display: flex; flex-direction: column; }
+.d-title { font-weight: 700; font-size: 15px; }
+.d-desc { font-size: 12px; color: #666; margin-top: 5px; }
+.d-price { font-weight: 700; color: #4f6bf5; }
+
+.btn-pay {
+    width: 100%;
+    background: #222;
+    color: white;
+    padding: 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    margin-top: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    text-transform: uppercase;
+    border: none;
+}
+.btn-pay:hover { background: #444; }
+
+/* Right Column: Summary */
+.checkout-summary-section { flex: 1; }
+
+.summary-card, .details-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+.summary-card h4, .details-card h4 { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+
+/* Checkout Item Mini */
+.co-item {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+.co-img { width: 80px; height: 80px; background: #f4f4f4; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.co-img img { width: 90%; transform: rotate(-10deg); }
+.co-info { flex: 1; }
+.co-name { font-weight: 700; font-size: 14px; margin-bottom: 5px; }
+.co-sub { font-size: 12px; color: #666; display: block; margin-bottom: 2px; }
+.co-price { color: #4f6bf5; font-weight: 700; margin-top: 5px; display: block; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .checkout-body { flex-direction: column-reverse; }
+}
