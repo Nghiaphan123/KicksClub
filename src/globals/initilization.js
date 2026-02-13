@@ -245,7 +245,7 @@ let products = [
     brand: "Luxury",
     price: 550.00,
     tag: "Designer",
-    image: "./../../../res/images/products/winterKick.png",
+    image: "./../../../res/images/products/winterKick.pfng",
     colors: [{ name: "White/Pink", hex: "#FFC0CB", selected: true }],
     sizes: [{ val: 37, available: true }, { val: 41, available: true }],
     description: "Virgil Abloh's take on a 80s tennis shoe.",
@@ -289,6 +289,18 @@ window.onload = function() {
         console.error("Đã xảy ra lỗi trong quá trình render:", error);
     }
 };
+
+/*
+  order: {
+    productName: string,
+    id: number,
+    createdDate: date, (dd/mm/yyyy)
+    paymentMethod: string, (Baking, Cash)
+    customerName: string,
+    status: string,
+    amount: number,
+  }
+*/
 
 let users = [
   {
