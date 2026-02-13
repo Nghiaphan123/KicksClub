@@ -443,7 +443,7 @@ header {
 @media (max-width: 576px) {
     .footer-grid { grid-template-columns: 1fr; }
 }
-/* Fix lỗi hiển thị giỏ hàng */
+/* GIỎ HÀNG Ở INDEX */
 .cart-toggle-btn {
     position: fixed;
     bottom: 30px;

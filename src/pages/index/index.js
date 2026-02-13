@@ -344,6 +344,7 @@ function renderNewDrops() {
         container.appendChild(card);
     });
 }
+/* GIỎ HÀNG Ở INDEX */
 class CartBottom {
     constructor() {
         this.cartKey = 'shoppingCart';
