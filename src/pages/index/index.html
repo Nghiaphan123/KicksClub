@@ -214,5 +214,41 @@
 
     <script src="../../globals/initilization.js"></script>
     <script src="index.js"></script>
+  <!-- ===== PHẦN GIỎ HÀNG ===== -->
+<link rel="stylesheet" href="cart-bottom.css">
+
+<!-- Nút giỏ hàng -->
+<button class="cart-toggle-btn" onclick="toggleCart()">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="badge" id="cartBadge">0</span>
+</button>
+
+<!-- Panel giỏ hàng -->
+<div class="cart-bottom" id="cartPanel">
+    <div class="cart-bottom-header">
+        <h3>Giỏ hàng của bạn</h3>
+        <button class="close-cart" onclick="cartBottom.hideCart()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="cart-items-list" id="cartItemsList">
+        <!-- Items sẽ được render từ localStorage -->
+    </div>
+    
+    <div class="cart-bottom-footer">
+        <div class="cart-total">
+            <span>Tổng tiền:</span>
+            <span id="cartTotal">$0.00</span>
+        </div>
+        <a href="./../cart/cart.html" class="view-cart-link">
+            <span>→ Xem giỏ hàng</span>
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+
+<script src="cart-bottom.js"></script>
+<!-- ===== KẾT THÚC PHẦN GIỎ HÀNG ===== -->
 </body>
 </html>
