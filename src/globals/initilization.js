@@ -258,50 +258,6 @@ let products = [
 if (!localStorage.getItem('products')) {
       localStorage.setItem('products', JSON.stringify(products));
   }
-/**
- * initialization.js
- * File này dùng để khởi tạo trạng thái ban đầu của trang web
- */
-
-window.onload = function() {
-    console.log("Trang web đã sẵn sàng!");
-  
-    // 1. KIỂM TRA DỮ LIỆU
-    // Kiểm tra xem biến 'products' đã tồn tại chưa (tránh lỗi ReferenceError)
-    if (typeof products === 'undefined') {
-        console.error("Lỗi: Không tìm thấy biến 'products'. Hãy kiểm tra lại file data hoặc thứ tự nhúng script.");
-        return;
-    }
-
-    // 2. KHỞI TẠO GIAO DIỆN
-    try {
-        // Render sản phẩm đầu tiên lên phần chi tiết (Upper section)
-        // Mặc định lấy sản phẩm index 0
-        if (products.length > 0) {
-            renderProductDetail(products[0]);
-        }
-
-        // Render toàn bộ danh sách sản phẩm xuống lưới (Lower section)
-        renderProductGrid();
-        
-        console.log("Khởi tạo dữ liệu thành công!");
-    } catch (error) {
-        console.error("Đã xảy ra lỗi trong quá trình render:", error);
-    }
-};
-
-/*
-  order: {
-    productName: string,
-    id: number,
-    createdDate: date, (dd/mm/yyyy)
-    paymentMethod: string, (Baking, Cash)
-    customerName: string,
-    status: string,
-    amount: number,
-  }
-*/
-
 let users = [
   {
     id: 1,
@@ -383,6 +339,19 @@ let users = [
     orders: []
   }
 ];
+
+users.push({
+  id: 5,
+  name: "Phan Văn Nghĩa",
+  email: "phanvann47@gmail.com",
+  phone: "",
+  password: "12345",
+  role: "customer",
+  status: "active",
+  address: [],
+  cart: [],
+  orders: []
+});
 
 // Đẩy danh sách người dùng lên localStorage nếu chưa có
 if (!localStorage.getItem('users')) {

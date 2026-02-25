@@ -17,20 +17,23 @@
         
         <header>
             <nav class="nav-links">
-                <a href="#">New Drops 🔥</a>
+                <a href="#" >New Drops 🔥</a>
                 <a href="#">Men ▾</a>
                 <a href="#">Women ▾</a>
             </nav>
 
-            <img  onclick="location.href='../index/index.html'">
+            <img class="img-logo" src="../../../res/images/logoKick.png" alt="KICKS Logo" onclick="location.href='./../index/index.html'" style="cursor: pointer; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.3)'" onmouseout="this.style.transform='scale(1)'">
 
-            <div class="user-actions">
-                <i class="fas fa-search"></i>
-                <i class="fas fa-user"></i>
-                <div class="cart-icon-wrapper" onclick="location.href='cart.html'">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count">0</span>
+            <div class="user-actions" style="display: flex; align-items: center; gap: 20px;">
+                <i class="fas fa-search" style="cursor: pointer;"></i>
+            
+                <div class="user-profile-header" style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-user" id="header-user-icon" style="cursor: pointer;"></i>
+                    <span id="header-greeting" style="font-size: 14px; font-weight: 600;">
+                    </span>
                 </div>
+                <i class="fas fa-shopping-cart" onclick="location.href='./../cart/cart.html'" style="cursor: pointer; position: relative;"></i>
+                <span class="cart-count" >0</span>
             </div>
         </header>
 

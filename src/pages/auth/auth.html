@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KICKS Auth</title>
+  <link rel="stylesheet" href="auth.css" />
+ 
+</head>
+<body>
+  <div class="container">
+    
+    <div class="left-section"> 
+      <a href="../index/index.html">
+          <img src="./logoKick.png" alt="KICKS Logo" class="auth-logo">
+      </a>
+        </div>
+
+    <div class="right-section">
+      <a href="../index/index.html" class="back-btn">
+          <span>Back</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+      </a>
+      
+
+      <div class="auth-box">
+        <div class="login-container" id="login-container">
+          <h2>Login</h2>
+          <a href="#">Forgot your password?</a>
+          <form id="login-form">
+            <input type="email" placeholder="Email" required />
+            <input type="password" placeholder="Password" required />
+            <input type="submit" value="Login" />
+          </form>
+          <p>Don't have an account? 
+            <button class="toggle-btn" onclick="toggleForm('register')">Register</button>
+          </p>
+        </div>
+
+        <div class="register-container hidden" id="register-container">
+          <h2>Register</h2>
+          <form id="register-form">
+            <input type="text" placeholder="Full Name" required />
+            <input type="email" placeholder="Email" required />
+            <input type="password" placeholder="Password" required />
+            <input type="password" placeholder="Confirm Password" required />
+            <input type="submit" value="Register" />
+          </form>
+          <p>Already have an account? 
+            <button class="toggle-btn" onclick="toggleForm('login')">Login</button>
+          </p>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+   <script src="auth.js" defer></script>
+</body>
+</html>

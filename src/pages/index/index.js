@@ -1,33 +1,676 @@
-/* index.js - Đã cập nhật Logic Lọc Màu */
-// --- LẤY DỮ LIỆU SẢN PHẨM TỪ LOCAL STORAGE ---
-if (!localStorage.getItem('products')) {
-const products = JSON.parse(localStorage.getItem('products')) || [];
-}
-// --- 1. KHAI BÁO BIẾN TRẠNG THÁI ---
-let state = {
-    filters: {
-        brands: [],
-        sizes: [],
-        colors: [], // Mảng chứa các mã màu đang chọn
-        maxPrice: 1000
-    },
-    currentPage: 1,
-    itemsPerPage: 6
-};
+/* ============================================================
+   KICKS - index.js
+   Tích hợp: Products Data + Users Init + Auth Guard +
+             Cart↔User Sync + Filter + Grid + Detail + Mini Cart
+============================================================ */
 
-// --- 2. RENDER CHI TIẾT SẢN PHẨM ---
-function renderProductDetail(product) {
+/* ============================================================
+   1. PRODUCT DATA
+============================================================ */
+let products = [
+    {
+        id: 1, name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES", brand: "Adidas", price: 125.00, tag: "New Release",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Shadow Navy", hex: "#2C3545", selected: true }, { name: "Army Green", hex: "#788575", selected: false }],
+        sizes: [{ val: 38, available: true }, { val: 39, available: false }, { val: 40, available: true }, { val: 41, available: true }],
+        description: "Shadow Navy / Army Green style for comfort.", amount: 50
+    },
+    {
+        id: 2, name: "NIKE AIR MAX 270", brand: "Nike", price: 150.00, tag: "Best Seller",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "White/Black", hex: "#FFFFFF", selected: true }, { name: "Red", hex: "#FF0000", selected: false }],
+        sizes: [{ val: 40, available: true }, { val: 41, available: true }, { val: 42, available: false }, { val: 43, available: true }],
+        description: "Nike introducing the new air max for everyone's comfort.", amount: 50
+    },
+    {
+        id: 3, name: "JORDAN RETRO 4 'MILITARY BLUE'", brand: "Jordan", price: 210.00, tag: "Trending",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Blue/White", hex: "#4f6bf5", selected: true }],
+        sizes: [{ val: 42, available: true }, { val: 43, available: true }],
+        description: "Classic silhouette with modern blue accents.", amount: 5
+    },
+    {
+        id: 4, name: "YEEZY BOOST 350 V2", brand: "Adidas", price: 230.00, tag: "Limited Edition",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Cream White", hex: "#F5F5DC", selected: true }],
+        sizes: [{ val: 36, available: true }, { val: 37, available: true }],
+        description: "Ultra-comfortable Boost technology.", amount: 50
+    },
+    {
+        id: 5, name: "PUMA RS-X REINVENT", brand: "Puma", price: 110.00, tag: "Sale",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Pastel Mix", hex: "#FFD1DC", selected: true }],
+        sizes: [{ val: 38, available: true }, { val: 39, available: true }],
+        description: "Chunky sneaker style for everyday wear.", amount: 50
+    },
+    {
+        id: 6, name: "NEW BALANCE 550", brand: "New Balance", price: 120.00, tag: "New Release",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Green/White", hex: "#006400", selected: true }],
+        sizes: [{ val: 40, available: true }, { val: 44, available: false }],
+        description: "Retro basketball inspired design.", amount: 50
+    },
+    {
+        id: 7, name: "CONVERSE CHUCK 70 CLASSIC", brand: "Converse", price: 85.00, tag: "Classic",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Black", hex: "#000000", selected: true }],
+        sizes: [{ val: 35, available: true }, { val: 45, available: true }],
+        description: "The timeless high-top sneaker.", amount: 5
+    },
+    {
+        id: 8, name: "VANS OLD SKOOL CORE", brand: "Vans", price: 65.00, tag: "Essential",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Black/White", hex: "#111111", selected: true }],
+        sizes: [{ val: 39, available: true }, { val: 40, available: true }],
+        description: "Iconic sidestripe skate shoe.", amount: 50
+    },
+    {
+        id: 9, name: "ASICS GEL-KAYANO 30", brand: "Asics", price: 160.00, tag: "Running",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Deep Ocean", hex: "#000080", selected: true }],
+        sizes: [{ val: 41, available: true }, { val: 42, available: true }],
+        description: "Maximum support and stability for runners.", amount: 50
+    },
+    {
+        id: 10, name: "BALENCIAGA TRIPLE S", brand: "Luxury", price: 950.00, tag: "High-End",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Grey/Red/Blue", hex: "#808080", selected: true }],
+        sizes: [{ val: 38, available: true }, { val: 42, available: true }],
+        description: "The pioneer of the chunky sneaker trend.", amount: 5
+    },
+    {
+        id: 11, name: "NIKE DUNK LOW PANDA", brand: "Nike", price: 110.00, tag: "Hot Deal",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "White/Black", hex: "#FFFFFF", selected: true }],
+        sizes: [{ val: 38, available: true }, { val: 43, available: false }],
+        description: "Most popular colorway for street style.", amount: 50
+    },
+    {
+        id: 12, name: "ADIDAS ULTRABOOST LIGHT", brand: "Adidas", price: 190.00, tag: "New Release",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Solar Red", hex: "#FF4500", selected: true }],
+        sizes: [{ val: 40, available: true }, { val: 41, available: true }],
+        description: "The lightest Ultraboost ever made.", amount: 5
+    },
+    {
+        id: 13, name: "REEBOK CLUB C 85", brand: "Reebok", price: 75.00, tag: "Vintage",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Vintage White", hex: "#FAF9F6", selected: true }],
+        sizes: [{ val: 42, available: true }, { val: 43, available: true }],
+        description: "Clean, minimalist 80s court style.", amount: 5
+    },
+    {
+        id: 14, name: "SALOMON XT-6", brand: "Salomon", price: 180.00, tag: "Outdoor",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Ghost Grey", hex: "#D3D3D3", selected: true }],
+        sizes: [{ val: 41, available: true }, { val: 42, available: true }],
+        description: "Technical footwear for trail and urban life.", amount: 50
+    },
+    {
+        id: 15, name: "DR. MARTENS 1460 BOOTS", brand: "Dr. Martens", price: 170.00, tag: "Iconic",
+        image: "./../../.././../../../res/images/products/winterKick.png",
+        colors: [{ name: "Cherry Red", hex: "#8B0000", selected: true }],
+        sizes: [{ val: 37, available: true }, { val: 41, available: true }],
+        description: "The original 8-eye leather boot.", amount: 50
+    },
+    {
+        id: 16, name: "ON CLOUD 5", brand: "On", price: 140.00, tag: "Comfort",
+        image: "./../../../res/images/products/winterKick.png",
+        colors: [{ name: "All Black", hex: "#000000", selected: true }],
+        sizes: [{ val: 40, available: true }, { val: 45, available: true }],
+        description: "Swiss engineering for cloud-like steps.", amount: 50
+    },
+    {
+        id: 17, name: "NEW BALANCE 990V6", brand: "New Balance", price: 200.00, tag: "Premium",
+        image: "./../../../res/images/products/winterKick.png",
+        colors: [{ name: "Grey", hex: "#A9A9A9", selected: true }],
+        sizes: [{ val: 40, available: true }, { val: 41, available: true }],
+        description: "The standard for premium performance sneakers.", amount: 50
+    },
+    {
+        id: 18, name: "ADIDAS SAMBA OG", brand: "Adidas", price: 100.00, tag: "Must-Have",
+        image: "./../../../res/images/products/winterKick.png",
+        colors: [{ name: "Cloud White", hex: "#FFFFFF", selected: true }],
+        sizes: [{ val: 38, available: true }, { val: 39, available: true }],
+        description: "From indoor soccer to street icon.", amount: 5
+    },
+    {
+        id: 19, name: "NIKE AIR FORCE 1 '07", brand: "Nike", price: 115.00, tag: "Essential",
+        image: "./../../../res/images/products/winterKick.png",
+        colors: [{ name: "Triple White", hex: "#FFFFFF", selected: true }],
+        sizes: [{ val: 36, available: true }, { val: 46, available: true }],
+        description: "Basketball OG that redefined sneaker culture.", amount: 50
+    },
+    {
+        id: 20, name: "OFF-WHITE OUT OF OFFICE", brand: "Luxury", price: 550.00, tag: "Designer",
+        image: "./../../../res/images/products/winterKick.png",
+        colors: [{ name: "White/Pink", hex: "#FFC0CB", selected: true }],
+        sizes: [{ val: 37, available: true }, { val: 41, available: true }],
+        description: "Virgil Abloh's take on a 80s tennis shoe.", amount: 5
+    }
+];
+
+/* ============================================================
+   2. KHỞI TẠO DỮ LIỆU MẪU VÀO LOCALSTORAGE (chỉ lần đầu)
+============================================================ */
+if (!localStorage.getItem('products')) {
+    localStorage.setItem('products', JSON.stringify(products));
+}
+
+const defaultUsers = [
+    {
+        id: 1, name: "Nguyễn Văn An", email: "nguyenvanan.99@gmail.com",
+        phone: "0909123456", password: "12345", role: "customer", status: "active",
+        address: [
+            { id: "addr_1", type: "Nhà riêng", content: "Số 123 Đường Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh", isDefault: true },
+            { id: "addr_2", type: "Công ty", content: "Tòa nhà Landmark 81, Quận Bình Thạnh, TP. Hồ Chí Minh", isDefault: false }
+        ],
+        cart: [], orders: []
+    },
+    {
+        id: 2, name: "Trần Thị Bích", email: "bichtran.design@gmail.com",
+        phone: "0988765432", password: "12345", role: "customer", status: "banned",
+        address: [{ id: "addr_3", type: "Nhà riêng", content: "Ngõ 105 Láng Hạ, Quận Đống Đa, Hà Nội", isDefault: true }],
+        cart: [], orders: []
+    },
+    {
+        id: 3, name: "Lê Hoàng Nam", email: "nam.lehoang@techcorp.vn",
+        phone: "0912345678", password: "12345", role: "admin", status: "active",
+        address: [{ id: "addr_4", type: "Văn phòng", content: "78 Đường Bạch Đằng, Quận Hải Châu, Đà Nẵng", isDefault: true }],
+        cart: [], orders: []
+    },
+    {
+        id: 4, name: "Phạm Minh Tuấn", email: "tuanpham123@yahoo.com.vn",
+        phone: "0356789123", password: "12345", role: "customer", status: "active",
+        address: [], cart: [], orders: []
+    },
+    {
+        id: 5, name: "Phan Văn Nghĩa", email: "phanvann47@gmail.com",
+        phone: "", password: "12345", role: "customer", status: "active",
+        address: [], cart: [], orders: []
+    }
+];
+
+if (!localStorage.getItem('users')) {
+    localStorage.setItem('users', JSON.stringify(defaultUsers));
+    console.log("Đã khởi tạo dữ liệu người dùng.");
+}
+
+/* ============================================================
+   3. HELPERS DÙNG CHUNG
+============================================================ */
+function getUsers() {
+    return JSON.parse(localStorage.getItem('users')) || [];
+}
+
+/* ============================================================
+   4. CART ↔ USER SYNC
+============================================================ */
+
+// Khi vào trang: load cart từ user đang đăng nhập vào shoppingCart
+function loadCartFromUser() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return;
+    const users = getUsers();
+    const user = users.find(u => u.id === currentUser.id);
+    if (user && Array.isArray(user.cart)) {
+        localStorage.setItem('shoppingCart', JSON.stringify(user.cart));
+    }
+}
+
+// Sau mỗi thay đổi cart: ghi ngược vào users[]
+function syncCartToUser() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return;
+    const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    const users = getUsers();
+    const idx = users.findIndex(u => u.id === currentUser.id);
+    if (idx !== -1) {
+        users[idx].cart = cart;
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+}
+
+/* ============================================================
+   5. TOAST NOTIFICATION
+============================================================ */
+function showToast(message, type = 'success', duration = 3000) {
+    // Inject styles once
+    if (!document.getElementById('kicks-toast-style')) {
+        const style = document.createElement('style');
+        style.id = 'kicks-toast-style';
+        style.innerHTML = `
+            #kicks-toast-container {
+                position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+                z-index: 99999; display: flex; flex-direction: column;
+                align-items: center; gap: 10px; pointer-events: none;
+            }
+            .kicks-toast {
+                display: flex; align-items: center; gap: 12px;
+                background: #222; color: #fff;
+                padding: 14px 22px; border-radius: 12px;
+                font-family: 'Rubik', sans-serif; font-size: 14px; font-weight: 600;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+                animation: toastIn 0.35s cubic-bezier(.21,1.02,.73,1) forwards;
+                pointer-events: all; max-width: 380px;
+                border-left: 4px solid #4f6bf5;
+            }
+            .kicks-toast.success { border-left-color: #4f6bf5; }
+            .kicks-toast.error   { border-left-color: #e74c3c; background: #2d1010; }
+            .kicks-toast.info    { border-left-color: #f39c12; }
+            .kicks-toast.out     { animation: toastOut 0.3s ease forwards; }
+            .kicks-toast img {
+                width: 42px; height: 42px; border-radius: 6px;
+                object-fit: cover; flex-shrink: 0; background: #444;
+            }
+            .kicks-toast-body { display: flex; flex-direction: column; gap: 2px; }
+            .kicks-toast-title { font-size: 13px; opacity: 0.7; font-weight: 500; }
+            .kicks-toast-msg   { font-size: 14px; font-weight: 700; }
+            @keyframes toastIn  { from { opacity:0; transform:translateY(20px) scale(0.95); } to { opacity:1; transform:translateY(0) scale(1); } }
+            @keyframes toastOut { from { opacity:1; transform:translateY(0) scale(1); } to { opacity:0; transform:translateY(10px) scale(0.95); } }
+        `;
+        document.head.appendChild(style);
+    }
+    // Create container if not present
+    let container = document.getElementById('kicks-toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'kicks-toast-container';
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = `kicks-toast ${type}`;
+    toast.innerHTML = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('out');
+        toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    }, duration);
+}
+
+function showCartToast(product, size, color) {
+    showToast(`
+        <img src="${product.image}" alt="${product.name}" onerror="this.style.display='none'">
+        <div class="kicks-toast-body">
+            <span class="kicks-toast-title">Added to cart ✓</span>
+            <span class="kicks-toast-msg">${product.name}</span>
+            <span style="font-size:12px;opacity:0.65;font-weight:500;">Size ${size} · ${color}</span>
+        </div>
+    `, 'success', 3000);
+}
+
+/* ============================================================
+   5b. PAGE NAVIGATION (SPA)
+============================================================ */
+function showPage(pageId) {
+    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    window.scrollTo(0, 0);
+    if (pageId === 'page-cart') {
+        renderCart();
+        updateCartSummary();
+        const btnCheckout = document.querySelector('.btn-checkout');
+        if (btnCheckout) btnCheckout.onclick = openCheckoutSlide;
+        updateCartPageHeader();
+    }
+    if (pageId === 'page-index') {
+        updateHeaderGreeting();
+        updateCartIconCount();
+    }
+}
+
+/* ============================================================
+   6. AUTH MODAL
+============================================================ */
+function openAuthModal(form) {
+    document.getElementById('auth-modal').classList.add('active');
+    toggleAuthForm(form || 'login');
+}
+function closeAuthModal() {
+    document.getElementById('auth-modal').classList.remove('active');
+}
+function toggleAuthForm(form) {
+    const login = document.getElementById('login-container');
+    const reg   = document.getElementById('register-container');
+    if (form === 'register') { login.classList.add('hidden'); reg.classList.remove('hidden'); }
+    else                     { reg.classList.add('hidden');   login.classList.remove('hidden'); }
+}
+
+// ĐĂNG KÝ
+document.getElementById('register-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const inputs   = this.querySelectorAll('input:not([type="submit"])');
+    const name     = inputs[0].value.trim();
+    const email    = inputs[1].value.trim();
+    const password = inputs[2].value;
+    const confirm  = inputs[3].value;
+
+    if (password !== confirm) { alert('Passwords do not match!'); return; }
+
+    const users = getUsers();
+    if (users.some(u => u.email === email)) {
+        alert('Email này đã được đăng ký. Vui lòng đăng nhập.');
+        return;
+    }
+
+    const newUser = {
+        id: Date.now(), name, email, password,
+        role: 'customer', status: 'active',
+        address: [], cart: [], orders: []
+    };
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    alert('Đăng ký thành công! Bạn có thể đăng nhập ngay.');
+    this.reset();
+    toggleAuthForm('login');
+});
+
+// ĐĂNG NHẬP
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const inputs   = this.querySelectorAll('input:not([type="submit"])');
+    const email    = inputs[0].value.trim();
+    const password = inputs[1].value;
+
+    const users = getUsers();
+    const user  = users.find(u => u.email === email);
+
+    if (!user)                    { alert('Không tìm thấy tài khoản. Vui lòng đăng ký.'); return; }
+    if (user.status === 'banned') { alert('Tài khoản của bạn đã bị khóa.'); return; }
+    if (user.password !== password){ alert('Sai mật khẩu.'); return; }
+
+    // Lưu currentUser
+    localStorage.setItem('currentUser', JSON.stringify({
+        id: user.id, name: user.name, email: user.email, role: user.role
+    }));
+
+    // Load cart của user vào shoppingCart
+    if (Array.isArray(user.cart) && user.cart.length > 0) {
+        localStorage.setItem('shoppingCart', JSON.stringify(user.cart));
+    } else {
+        localStorage.removeItem('shoppingCart');
+    }
+
+    closeAuthModal();
+    updateHeaderGreeting();
+    updateCartPageHeader();
+    updateCartIconCount();
+    cartBottom.renderCart();
+    alert('Đăng nhập thành công! Chào mừng, ' + user.name + '!');
+});
+
+/* ============================================================
+   7. PROFILE MODAL
+============================================================ */
+function openProfileModal() {
+    const currentUserInfo = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUserInfo) { openAuthModal('login'); return; }
+
+    const usersList  = getUsers();
+    const userIndex  = usersList.findIndex(u => u.id === currentUserInfo.id);
+    if (userIndex === -1) { alert('Lỗi dữ liệu tài khoản!'); return; }
+
+    const fullUser = usersList[userIndex];
+    document.getElementById('display-user-name').innerText = fullUser.name;
+    document.getElementById('prof-name').value             = fullUser.name;
+    document.getElementById('prof-email').value            = fullUser.email;
+    document.getElementById('prof-password').value         = '';
+
+    renderProfileAddressList(fullUser.address || []);
+    renderOrdersList(fullUser.orders || []);
+
+    // Reset tab về Account Details
+    document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-info').classList.add('active');
+    document.querySelectorAll('.profile-nav li').forEach(li => li.classList.remove('active'));
+    document.querySelector('.profile-nav li').classList.add('active');
+
+    document.getElementById('profile-modal').classList.add('active');
+}
+
+// Render danh sách địa chỉ dạng ol trong profile
+function renderProfileAddressList(addresses) {
+    const container = document.getElementById('prof-address-list');
+    if (!container) return;
+
+    if (!addresses || addresses.length === 0) {
+        container.innerHTML = `
+            <p style="color:#999;font-size:13px;margin-bottom:10px;">Chưa có địa chỉ nào được lưu.</p>`;
+    } else {
+        const items = addresses.map((addr, i) => `
+            <li style="
+                padding:12px 16px; border:2px solid ${addr.isDefault ? '#4f6bf5' : '#e0e0e0'};
+                border-radius:10px; margin-bottom:8px; cursor:pointer;
+                background:${addr.isDefault ? '#f0f4ff' : '#fff'};
+                transition:all 0.2s;
+                display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+            " onclick="setDefaultAddress(${i})">
+                <div style="flex:1;">
+                    <div style="font-weight:700;font-size:13px;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">
+                        ${addr.type}
+                        ${addr.isDefault ? '<span style="margin-left:8px;background:#4f6bf5;color:#fff;padding:2px 8px;border-radius:20px;font-size:11px;">Default</span>' : ''}
+                    </div>
+                    <div style="font-size:14px;color:#222;">${addr.content}</div>
+                </div>
+                <button onclick="event.stopPropagation();deleteProfileAddress(${i})"
+                    style="background:none;border:none;color:#ccc;cursor:pointer;font-size:16px;padding:0 4px;line-height:1;"
+                    title="Xóa địa chỉ">✕</button>
+            </li>`).join('');
+        container.innerHTML = `<ol style="list-style:none;padding:0;margin-bottom:10px;">${items}</ol>`;
+    }
+
+    // Always show add-new-address form toggle
+    container.innerHTML += `
+        <div id="prof-new-addr-wrap" style="margin-top:4px;">
+            <button type="button" onclick="toggleProfileNewAddrForm()"
+                style="background:none;border:2px dashed #ccc;border-radius:10px;width:100%;
+                       padding:10px;color:#888;font-weight:600;font-size:13px;cursor:pointer;
+                       transition:all 0.2s;" id="btn-prof-add-addr">
+                + Thêm địa chỉ mới
+            </button>
+            <div id="prof-new-addr-form" style="display:none;margin-top:10px;">
+                <div style="display:flex;gap:8px;margin-bottom:8px;">
+                    <input id="prof-new-addr-type" type="text" placeholder="Loại (VD: Nhà riêng)"
+                        style="flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;">
+                    <input id="prof-new-addr-content" type="text" placeholder="Địa chỉ đầy đủ"
+                        style="flex:2;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;">
+                </div>
+                <button type="button" onclick="saveProfileNewAddress()"
+                    style="background:#4f6bf5;color:#fff;border:none;padding:10px 20px;
+                           border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">
+                    Lưu địa chỉ
+                </button>
+            </div>
+        </div>`;
+}
+
+function toggleProfileNewAddrForm() {
+    const form = document.getElementById('prof-new-addr-form');
+    if (form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveProfileNewAddress() {
+    const typeInput    = document.getElementById('prof-new-addr-type');
+    const contentInput = document.getElementById('prof-new-addr-content');
+    const type    = typeInput?.value.trim() || 'Nhà riêng';
+    const content = contentInput?.value.trim();
+    if (!content) { showToast('<span>Vui lòng nhập địa chỉ!</span>', 'error'); return; }
+
+    const currentUserInfo = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUserInfo) return;
+    const users = getUsers();
+    const idx   = users.findIndex(u => u.id === currentUserInfo.id);
+    if (idx === -1) return;
+
+    if (!Array.isArray(users[idx].address)) users[idx].address = [];
+    const isFirst = users[idx].address.length === 0;
+    users[idx].address.push({ id: 'addr_' + Date.now(), type, content, isDefault: isFirst });
+    localStorage.setItem('users', JSON.stringify(users));
+
+    showToast(`<span>Đã lưu địa chỉ mới! ✓</span>`, 'success');
+    renderProfileAddressList(users[idx].address);
+}
+
+function setDefaultAddress(index) {
+    const currentUserInfo = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUserInfo) return;
+    const users = getUsers();
+    const idx   = users.findIndex(u => u.id === currentUserInfo.id);
+    if (idx === -1) return;
+    users[idx].address.forEach((a, i) => a.isDefault = (i === index));
+    localStorage.setItem('users', JSON.stringify(users));
+    renderProfileAddressList(users[idx].address);
+}
+
+function deleteProfileAddress(index) {
+    const currentUserInfo = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUserInfo) return;
+    const users = getUsers();
+    const idx   = users.findIndex(u => u.id === currentUserInfo.id);
+    if (idx === -1) return;
+    users[idx].address.splice(index, 1);
+    // If deleted was default, set first as default
+    if (users[idx].address.length > 0 && !users[idx].address.some(a => a.isDefault)) {
+        users[idx].address[0].isDefault = true;
+    }
+    localStorage.setItem('users', JSON.stringify(users));
+    renderProfileAddressList(users[idx].address);
+}
+
+function closeProfileModal() {
+    document.getElementById('profile-modal').classList.remove('active');
+}
+
+function switchTab(e, tabId) {
+    document.querySelectorAll('.profile-nav li').forEach(li => li.classList.remove('active'));
+    e.currentTarget.classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+}
+
+function logoutUser() {
+    if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('shoppingCart'); // Xóa cart tạm
+        closeProfileModal();
+        updateHeaderGreeting();
+        updateCartPageHeader();
+        updateCartIconCount();
+        cartBottom.renderCart();
+    }
+}
+
+// LƯU THÔNG TIN PROFILE (name + password only; address managed separately)
+document.getElementById('profile-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const currentUserInfo = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUserInfo) return;
+
+    const users = getUsers();
+    const idx   = users.findIndex(u => u.id === currentUserInfo.id);
+    if (idx === -1) return;
+
+    const newName = document.getElementById('prof-name').value.trim();
+    const newPass = document.getElementById('prof-password').value;
+
+    users[idx].name = newName;
+    if (newPass !== '') users[idx].password = newPass;
+
+    localStorage.setItem('users', JSON.stringify(users));
+    currentUserInfo.name = newName;
+    localStorage.setItem('currentUser', JSON.stringify(currentUserInfo));
+
+    document.getElementById('display-user-name').innerText = newName;
+    document.getElementById('prof-password').value         = '';
+    updateHeaderGreeting();
+    showToast(`<span>Cập nhật thông tin thành công! ✓</span>`, 'success');
+});
+
+// RENDER LỊCH SỬ ĐƠN HÀNG
+function renderOrdersList(ordersArray) {
+    const container = document.getElementById('orders-list-container');
+    if (ordersArray.length === 0) {
+        container.innerHTML = `
+            <div style="text-align:center;padding:30px;background:#f9f9f9;border-radius:8px;">
+                <i class="fas fa-box-open" style="font-size:36px;color:#ccc;margin-bottom:12px;display:block;"></i>
+                <p>Bạn chưa có đơn hàng nào.</p>
+            </div>`;
+        return;
+    }
+    let html = '';
+    [...ordersArray].reverse().forEach(order => {
+        let itemsHtml = '';
+        order.items.forEach(item => {
+            itemsHtml += `
+                <div class="order-item-mini">
+                    <img src="${item.image || 'https://via.placeholder.com/50'}" alt="${item.name}">
+                    <div>
+                        <div style="font-weight:700;">${item.name}</div>
+                        <div style="color:#666;">Size: ${item.size} | Qty: ${item.quantity}</div>
+                    </div>
+                </div>`;
+        });
+        const dateStr     = new Date(order.date).toLocaleDateString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        const statusClass = order.status.toLowerCase() === 'completed' ? 'completed' : 'pending';
+        html += `
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <div class="o-id">${order.orderId}</div>
+                        <div class="o-date">${dateStr}</div>
+                    </div>
+                    <div class="o-status ${statusClass}">${order.status}</div>
+                </div>
+                <div class="order-items">${itemsHtml}</div>
+                <div class="order-total">Total: $${order.totalPrice.toFixed(2)}</div>
+            </div>`;
+    });
+    container.innerHTML = html;
+}
+
+/* ============================================================
+   8. HEADER GREETING
+============================================================ */
+function updateHeaderGreeting() {
+    const greetingEl = document.getElementById('header-greeting');
+    const userIcon   = document.getElementById('header-user-icon');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!greetingEl) return;
+    if (currentUser) {
+        greetingEl.innerHTML = `Hi, <span style="color:#4f6bf5;cursor:pointer;" onclick="openProfileModal()">${currentUser.name}</span>!`;
+        if (userIcon) userIcon.onclick = openProfileModal;
+    } else {
+        greetingEl.innerHTML = `<a href="#" onclick="openAuthModal('login');return false;" style="text-decoration:none;color:#666;font-size:13px;">Chưa có tài khoản? <span style="color:#4f6bf5;font-weight:700;">Đăng ký ngay!</span></a>`;
+        if (userIcon) userIcon.onclick = () => openAuthModal('login');
+    }
+}
+
+function updateCartPageHeader() {
+    const greetingEl  = document.getElementById('cart-page-greeting');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!greetingEl) return;
+    if (currentUser) {
+        greetingEl.innerHTML = `Hi, <span style="color:#4f6bf5;cursor:pointer;" onclick="openProfileModal()">${currentUser.name}</span>!`;
+    } else {
+        greetingEl.innerHTML = `<a href="#" onclick="openAuthModal('login');return false;" style="color:#4f6bf5;text-decoration:none;font-size:13px;">Đăng nhập</a>`;
+    }
+}
+
+/* ============================================================
+   9. PRODUCT DETAIL
+============================================================ */
+function renderProductDetail(product, shouldScroll = false) {
     const container = document.getElementById('product-detail-section');
-    
+    if (!container) return;
+
     let sizesHtml = product.sizes.map(size => {
-        let isDisabled = !size.available ? 'disabled' : ''; 
-        let isSelected = !isDisabled && size.val == product.sizes[0].val ? 'selected' : ''; 
+        let isDisabled = !size.available ? 'disabled' : '';
+        let isSelected = (!isDisabled && size.val == product.sizes.find(s=>s.available)?.val) ? 'selected' : '';
         return `<div class="size-btn ${isDisabled} ${isSelected}">${size.val}</div>`;
     }).join('');
 
-    let colorsHtml = product.colors.map((colorObj, index) => {
-        let isSelected = index === 0 ? 'selected' : '';
-        return `<div class="color-circle ${isSelected}" style="background-color: ${colorObj.hex};"></div>`;
+    let colorsHtml = product.colors.map((colorObj, i) => {
+        return `<div class="color-circle ${i===0?'selected':''}" style="background-color:${colorObj.hex};"></div>`;
     }).join('');
 
     container.innerHTML = `
@@ -36,85 +679,148 @@ function renderProductDetail(product) {
         <img src="${product.image}" alt="${product.name}">
     </div>
     <div class="detail-info">
-        <span style="color: #888; font-size: 14px; font-weight: 600; text-transform: uppercase;">Men's Shoes</span>
+        <span style="color:#888;font-size:14px;font-weight:600;text-transform:uppercase;">Men's Shoes</span>
         <h1>${product.name}</h1>
         <span class="price">$${product.price.toFixed(2)}</span>
-        
-        <div style="margin-top: 20px;">
+        <div style="margin-top:20px;">
             <span class="label">Color</span>
             <div class="color-options">${colorsHtml}</div>
         </div>
-        
         <div>
-            <div style="display:flex; justify-content:space-between;">
+            <div style="display:flex;justify-content:space-between;">
                 <span class="label">Select Size</span>
-                <span class="label" style="color:var(--primary-blue); cursor:pointer;">Size Chart</span>
+                <span class="label" style="color:var(--primary-blue);cursor:pointer;">Size Chart</span>
             </div>
             <div class="size-grid">${sizesHtml}</div>
         </div>
-
         <div class="btn-group">
             <button id="btn-add-to-cart" class="btn btn-black">Add To Cart</button>
             <button class="btn btn-fav"><i class="far fa-heart"></i></button>
         </div>
         <button id="btn-buy-now" class="btn btn-blue" style="width:100%">Buy It Now</button>
-        
         <div class="description">
-            ${product.description} <br><br>
+            ${product.description}<br><br>
             This product is excluded from all promotional discounts and offers.
         </div>
-    </div>
-    `;
+    </div>`;
 
-    // Xử lý logic thêm vào giỏ hàng
     handleAddToCartLogic(product);
-    
-    if(container) window.scrollTo({ behavior: 'smooth', top: container.offsetTop - 20 });
+
+    // Chỉ scroll khi user click, KHÔNG scroll khi init trang (F5)
+    if (shouldScroll) {
+        window.scrollTo({ behavior: 'smooth', top: container.offsetTop - 20 });
+    }
 }
 
-// --- 3. XỬ LÝ SỰ KIỆN FILTER (CORE) ---
-function toggleFilter(type, value, element) {
-    // A. Logic BRAND (Checkbox)
-    if (type === 'brand') {
-        if (state.filters.brands.includes(value)) {
-            state.filters.brands = state.filters.brands.filter(item => item !== value);
-        } else {
-            state.filters.brands.push(value);
-        }
-    } 
-    // B. Logic SIZE (Button)
-    else if (type === 'size') {
-        // Toggle class active cho nút bấm (Visual)
-        const btns = document.querySelectorAll('.filter-size-btn');
-        btns.forEach(btn => {
-            if(parseInt(btn.innerText) === value) btn.classList.toggle('active');
+/* ============================================================
+   10. ADD TO CART LOGIC (Có auth guard + sync)
+============================================================ */
+function handleAddToCartLogic(product) {
+    let selectedSize  = null;
+    let selectedColor = product.colors && product.colors.length > 0 ? product.colors[0].name : 'Standard';
+
+    // Chọn size
+    const sizeBtns = document.querySelectorAll('.size-btn');
+    sizeBtns.forEach(btn => {
+        if (btn.classList.contains('disabled')) return;
+        btn.addEventListener('click', function() {
+            sizeBtns.forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedSize = this.innerText;
         });
+    });
 
-        // Update dữ liệu
-        if (state.filters.sizes.includes(value)) {
-            state.filters.sizes = state.filters.sizes.filter(item => item !== value);
+    // Chọn màu
+    const colorCircles = document.querySelectorAll('.color-circle');
+    colorCircles.forEach((circle, i) => {
+        circle.addEventListener('click', function() {
+            colorCircles.forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedColor = product.colors[i].name;
+        });
+    });
+
+    function addToCart(isBuyNow) {
+        // ✅ KIỂM TRA ĐĂNG NHẬP
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            if (confirm('Bạn cần đăng nhập để thêm vào giỏ hàng.\nNhấn OK để đăng nhập.')) {
+                openAuthModal('login');
+            }
+            return;
+        }
+
+        // ✅ KIỂM TRA SIZE
+        if (!selectedSize) {
+            alert('Vui lòng chọn size trước!');
+            return;
+        }
+
+        const cartItem = {
+            id: product.id, name: product.name, price: product.price,
+            image: product.image, size: selectedSize, color: selectedColor, quantity: 1
+        };
+
+        let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+        const existIdx = cart.findIndex(item =>
+            item.id === cartItem.id && item.size === cartItem.size && item.color === cartItem.color
+        );
+        if (existIdx !== -1) cart[existIdx].quantity += 1;
+        else cart.push(cartItem);
+
+        localStorage.setItem('shoppingCart', JSON.stringify(cart));
+
+        // ✅ SYNC VÀO users[].cart
+        syncCartToUser();
+
+        updateCartIconCount();
+        cartBottom.renderCart();
+
+        if (isBuyNow) {
+            showPage('page-cart');
         } else {
-            state.filters.sizes.push(value);
+            // Show toast instead of opening mini cart panel
+            showCartToast(product, selectedSize, selectedColor);
         }
     }
-    // C. Logic COLOR (Button tròn) - MỚI THÊM
-    else if (type === 'color') {
-        // Toggle visual active (thêm viền đen)
+
+    const btnAdd = document.getElementById('btn-add-to-cart');
+    const btnBuy = document.getElementById('btn-buy-now');
+    if (btnAdd) btnAdd.onclick = () => addToCart(false);
+    if (btnBuy) btnBuy.onclick = () => addToCart(true);
+}
+
+/* ============================================================
+   11. FILTER & GRID
+============================================================ */
+let state = {
+    filters: { brands: [], sizes: [], colors: [], maxPrice: 1000 },
+    currentPage: 1,
+    itemsPerPage: 6
+};
+
+function toggleFilter(type, value, element) {
+    if (type === 'brand') {
+        state.filters.brands.includes(value)
+            ? state.filters.brands = state.filters.brands.filter(i => i !== value)
+            : state.filters.brands.push(value);
+    } else if (type === 'size') {
+        document.querySelectorAll('.filter-size-btn').forEach(btn => {
+            if (parseInt(btn.innerText) === value) btn.classList.toggle('active');
+        });
+        state.filters.sizes.includes(value)
+            ? state.filters.sizes = state.filters.sizes.filter(i => i !== value)
+            : state.filters.sizes.push(value);
+    } else if (type === 'color') {
         if (element) element.classList.toggle('active');
-
-        if (state.filters.colors.includes(value)) {
-            state.filters.colors = state.filters.colors.filter(item => item !== value);
-        } else {
-            state.filters.colors.push(value);
-        }
+        state.filters.colors.includes(value)
+            ? state.filters.colors = state.filters.colors.filter(i => i !== value)
+            : state.filters.colors.push(value);
     }
-    
-    // Reset về trang 1 và render lại lưới sản phẩm
     state.currentPage = 1;
     renderProductGrid();
 }
 
-// Xử lý thanh giá
 function updatePrice(value) {
     document.getElementById('priceValue').innerText = `$${value}`;
     state.filters.maxPrice = parseInt(value);
@@ -122,70 +828,41 @@ function updatePrice(value) {
     renderProductGrid();
 }
 
-// Reset toàn bộ
-function resetFilters() {
-    state.filters = { brands: [], sizes: [], colors: [], maxPrice: 1000 };
-    state.currentPage = 1;
-    
-    // Reset UI HTML
-    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-    document.querySelectorAll('.filter-size-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.filter-color-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('priceRange').value = 1000;
-    document.getElementById('priceValue').innerText = "$1000";
-    
-    renderProductGrid();
-}
-
-// --- 4. LOGIC LỌC DỮ LIỆU ---
 function getFilteredProducts() {
-    return products.filter(product => {
-        // 1. Lọc Brand
-        const brandMatch = state.filters.brands.length === 0 || state.filters.brands.includes(product.brand);
-        
-        // 2. Lọc Giá
-        const priceMatch = product.price <= state.filters.maxPrice;
-        
-        // 3. Lọc Size
-        const productSizeValues = product.sizes.map(s => s.val); 
-        const sizeMatch = state.filters.sizes.length === 0 || state.filters.sizes.some(s => productSizeValues.includes(s));
-
-        // 4. Lọc Màu (Mới)
-        const productColors = product.colors.map(c => c.hex);
-        const colorMatch = state.filters.colors.length === 0 || state.filters.colors.some(c => productColors.includes(c));
-
+    return products.filter(p => {
+        const brandMatch = state.filters.brands.length === 0 || state.filters.brands.includes(p.brand);
+        const priceMatch = p.price <= state.filters.maxPrice;
+        const sizeMatch  = state.filters.sizes.length === 0 || state.filters.sizes.some(s => p.sizes.map(sz => sz.val).includes(s));
+        const colorMatch = state.filters.colors.length === 0 || state.filters.colors.some(c => p.colors.map(co => co.hex).includes(c));
         return brandMatch && priceMatch && sizeMatch && colorMatch;
     });
 }
 
-// --- 5. RENDER GRID & PHÂN TRANG ---
 function renderProductGrid() {
-    const grid = document.getElementById('grid-container');
+    const grid       = document.getElementById('grid-container');
     const pagination = document.getElementById('pagination');
     const countLabel = document.getElementById('product-count');
-    
     if (!grid || !pagination) return;
 
     grid.innerHTML = '';
     pagination.innerHTML = '';
 
     const filteredData = getFilteredProducts();
-    if(countLabel) countLabel.innerText = `(${filteredData.length} items)`;
+    if (countLabel) countLabel.innerText = `(${filteredData.length} items)`;
 
     if (filteredData.length === 0) {
-        grid.innerHTML = '<div style="width:100%; text-align:center; grid-column: 1/-1;">No products found.</div>';
+        grid.innerHTML = '<div style="width:100%;text-align:center;grid-column:1/-1;padding:40px;">No products found.</div>';
         return;
     }
 
-    const totalPages = Math.ceil(filteredData.length / state.itemsPerPage);
-    const startIndex = (state.currentPage - 1) * state.itemsPerPage;
-    const productsOnPage = filteredData.slice(startIndex, startIndex + state.itemsPerPage);
+    const totalPages  = Math.ceil(filteredData.length / state.itemsPerPage);
+    const startIndex  = (state.currentPage - 1) * state.itemsPerPage;
+    const pageProducts = filteredData.slice(startIndex, startIndex + state.itemsPerPage);
 
-    productsOnPage.forEach(product => {
+    pageProducts.forEach(product => {
         const card = document.createElement('div');
         card.className = 'product-card';
-        card.onclick = () => renderProductDetail(product);
-
+        card.onclick   = () => renderProductDetail(product, true); // scroll khi click
         card.innerHTML = `
             <div class="card-img">
                 <span class="card-badge">${product.tag}</span>
@@ -195,265 +872,502 @@ function renderProductGrid() {
                 <div class="card-title">${product.name}</div>
                 <div class="card-price">$${product.price.toFixed(2)}</div>
                 <button class="btn-view">View Product</button>
-            </div>
-        `;
+            </div>`;
         grid.appendChild(card);
     });
 
     if (totalPages > 1) {
         for (let i = 1; i <= totalPages; i++) {
             const btn = document.createElement('button');
-            btn.innerText = i;
-            btn.className = `page-btn ${i === state.currentPage ? 'active' : ''}`;
-            btn.onclick = () => {
+            btn.innerText  = i;
+            btn.className  = `page-btn ${i === state.currentPage ? 'active' : ''}`;
+            btn.onclick    = () => {
                 state.currentPage = i;
                 renderProductGrid();
-                document.querySelector('.main-content').scrollIntoView({behavior: 'smooth'});
+                document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth' });
             };
             pagination.appendChild(btn);
         }
     }
 }
 
-// --- 6. KHỞI TẠO ---
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Cập nhật số trên giỏ hàng ngay khi vào web
-    updateCartIconCount();
-
-    // 2. Render dữ liệu
-    if (typeof products !== 'undefined' && products.length > 0) {
-        renderProductDetail(products[0]);
-        renderProductGrid();
-        renderNewDrops();
-    }
-});
-
-/* ==========================================================
-   PHẦN LOGIC MỚI: XỬ LÝ GIỎ HÀNG & NÚT MUA HÀNG
-   ========================================================== */
-function handleAddToCartLogic(product) {
-    let selectedSize = null;
-
-    // 1. Logic chọn Size
-    const sizeBtns = document.querySelectorAll('.size-btn');
-    sizeBtns.forEach(btn => {
-        if (btn.classList.contains('disabled')) return; 
-
-        btn.addEventListener('click', function() {
-            sizeBtns.forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            selectedSize = this.innerText; 
-        });
-    });
-
-    // 2. Hàm xử lý chung cho Add Cart và Buy Now
-    function addToCart(isBuyNow = false) {
-        if (!selectedSize) {
-            alert("Please select a size first!");
-            return;
-        }
-
-        const cartItem = {
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            size: selectedSize,
-            color: product.colors && product.colors.length > 0 ? product.colors[0].name : "Standard", 
-            quantity: 1
-        };
-
-        let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
-
-        const existingItemIndex = cart.findIndex(item => item.id === cartItem.id && item.size === cartItem.size);
-
-        if (existingItemIndex !== -1) {
-            cart[existingItemIndex].quantity += 1;
-        } else {
-            cart.push(cartItem);
-        }
-
-        localStorage.setItem('shoppingCart', JSON.stringify(cart));
-        updateCartIconCount();
-
-        if (isBuyNow) {
-            window.location.href = '../cart/cart.html';
-        } else {
-            alert("Added to cart successfully!");
-        }
-    }
-
-    const btnAdd = document.getElementById('btn-add-to-cart');
-    const btnBuy = document.getElementById('btn-buy-now');
-
-    if(btnAdd) btnAdd.addEventListener('click', () => addToCart(false));
-    if(btnBuy) btnBuy.addEventListener('click', () => addToCart(true));
-}
-
-// Hàm cập nhật số lượng trên icon giỏ hàng (Header)
-function updateCartIconCount() {
-    const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    
-    const countElement = document.querySelector('.cart-count');
-    if (countElement) {
-        countElement.innerText = totalItems;
-        countElement.style.display = totalItems > 0 ? 'inline-block' : 'none';
-    }
-}
-
-// Dữ liệu mẫu cho phần New Drops (4 sản phẩm mới nhất)
-const newDropsData = typeof products !== 'undefined' ? products.slice(0, 4) : [];
-
-// Hàm Render New Drops
+/* ============================================================
+   12. NEW DROPS
+============================================================ */
 function renderNewDrops() {
     const container = document.getElementById('new-drops-grid');
     if (!container) return;
-
     container.innerHTML = '';
-    
-    newDropsData.forEach(item => {
+
+    products.slice(0, 4).forEach(item => {
         const card = document.createElement('div');
         card.className = 'drop-card';
-        
         card.innerHTML = `
             <div class="drop-image-wrap">
                 <span class="drop-tag">New</span>
                 <img src="${item.image}" alt="${item.name}">
             </div>
             <div class="drop-title">${item.name}</div>
-            <button class="btn-drop-view">
-                VIEW PRODUCT - <span>$${item.price}</span>
-            </button>
-        `;
+            <button class="btn-drop-view">VIEW PRODUCT - <span>$${item.price}</span></button>`;
 
-        const btnView = card.querySelector('.btn-drop-view');
-        btnView.addEventListener('click', () => {
-            renderProductDetail(item);
-            const detailSection = document.getElementById('product-detail-section');
-            if(detailSection) detailSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        });
-
-        const imgWrap = card.querySelector('.drop-image-wrap');
-        imgWrap.addEventListener('click', () => {
-            renderProductDetail(item);
-            const detailSection = document.getElementById('product-detail-section');
-            if(detailSection) detailSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        });
-
+        const goToDetail = () => {
+            renderProductDetail(item, true); // scroll khi click
+        };
+        card.querySelector('.btn-drop-view').addEventListener('click', goToDetail);
+        card.querySelector('.drop-image-wrap').addEventListener('click', goToDetail);
         container.appendChild(card);
     });
 }
-/* GIỎ HÀNG Ở INDEX */
+
+/* ============================================================
+   13. CART ICON COUNT
+============================================================ */
+function updateCartIconCount() {
+    const cart  = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    const total = cart.reduce((s, item) => s + item.quantity, 0);
+
+    // Badge header
+    const elCount = document.getElementById('main-cart-count');
+    if (elCount) { elCount.innerText = total; elCount.style.display = total > 0 ? 'inline-block' : 'none'; }
+
+    // Badge floating button
+    const badge = document.getElementById('cartBadge');
+    if (badge) { badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none'; }
+}
+
+/* ============================================================
+   14. MINI CART (FLOATING PANEL)
+============================================================ */
 class CartBottom {
-    constructor() {
-        this.cartKey = 'shoppingCart';
-        this.init();
-    }
+    constructor() { this.cartKey = 'shoppingCart'; this.init(); }
 
     getCartData() {
-        try {
-            const cart = localStorage.getItem(this.cartKey);
-            return cart ? JSON.parse(cart) : [];
-        } catch (e) {
-            return [];
-        }
+        try { const c = localStorage.getItem(this.cartKey); return c ? JSON.parse(c) : []; }
+        catch(e) { return []; }
     }
-
-    getTotalPrice() {
-        const cart = this.getCartData();
-        return cart.reduce((sum, item) => {
-            return sum + (parseFloat(item.price) * (item.quantity || 1));
-        }, 0);
-    }
-
-    getTotalItems() {
-        const cart = this.getCartData();
-        return cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-    }
+    getTotalPrice() { return this.getCartData().reduce((s,i) => s + parseFloat(i.price) * (i.quantity||1), 0); }
+    getTotalItems() { return this.getCartData().reduce((s,i) => s + (i.quantity||1), 0); }
 
     toggleCart() {
-        const cartPanel = document.getElementById('cartPanel');
-        if (cartPanel) {
-            cartPanel.classList.toggle('show');
-            if (cartPanel.classList.contains('show')) {
-                this.renderCart();
-            }
-        }
+        const p = document.getElementById('cartPanel');
+        if (p) { p.classList.toggle('show'); if (p.classList.contains('show')) this.renderCart(); }
     }
-
     hideCart() {
-        const cartPanel = document.getElementById('cartPanel');
-        if (cartPanel) {
-            cartPanel.classList.remove('show');
-        }
+        const p = document.getElementById('cartPanel');
+        if (p) p.classList.remove('show');
     }
 
     renderCart() {
-        const cartContainer = document.getElementById('cartItemsList');
-        const totalElement = document.getElementById('cartTotal');
-        const badge = document.getElementById('cartBadge');
-        const cartData = this.getCartData();
+        const container = document.getElementById('cartItemsList');
+        const totalEl   = document.getElementById('cartTotal');
+        const badge     = document.getElementById('cartBadge');
+        const cartData  = this.getCartData();
         const totalItems = this.getTotalItems();
 
-        if (badge) {
-            badge.textContent = totalItems;
-            badge.style.display = totalItems > 0 ? 'flex' : 'none';
-        }
-
-        if (!cartContainer) return;
+        if (badge) { badge.textContent = totalItems; badge.style.display = totalItems > 0 ? 'flex' : 'none'; }
+        if (!container) return;
 
         if (cartData.length === 0) {
-            cartContainer.innerHTML = `
-                <div class="empty-cart">
-                    <p>Giỏ hàng trống</p>
-                </div>
-            `;
-            if (totalElement) totalElement.textContent = '$0.00';
+            container.innerHTML = '<div class="empty-cart"><p>Giỏ hàng trống</p></div>';
+            if (totalEl) totalEl.textContent = '$0.00';
             return;
         }
 
-        cartContainer.innerHTML = cartData.map(item => `
+        container.innerHTML = cartData.map(item => `
             <div class="cart-item">
                 <div class="cart-item-info">
                     <h4>${item.name || 'Sản phẩm'}</h4>
                     <div class="price">$${parseFloat(item.price).toFixed(2)}</div>
                 </div>
                 <span class="cart-item-quantity">x${item.quantity || 1}</span>
-            </div>
-        `).join('');
+            </div>`).join('');
 
-        if (totalElement) {
-            totalElement.textContent = `$${this.getTotalPrice().toFixed(2)}`;
-        }
+        if (totalEl) totalEl.textContent = `$${this.getTotalPrice().toFixed(2)}`;
     }
 
     init() {
-        document.addEventListener('DOMContentLoaded', () => {
-            this.renderCart();
-        });
-
-        window.addEventListener('storage', (e) => {
-            if (e.key === this.cartKey) {
-                this.renderCart();
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-            const cartPanel = document.getElementById('cartPanel');
-            const toggleBtn = document.querySelector('.cart-toggle-btn');
-            
-            if (cartPanel && cartPanel.classList.contains('show')) {
-                if (!cartPanel.contains(e.target) && !toggleBtn.contains(e.target)) {
-                    this.hideCart();
-                }
+        window.addEventListener('storage', e => { if (e.key === this.cartKey) this.renderCart(); });
+        document.addEventListener('click', e => {
+            const p = document.getElementById('cartPanel');
+            const t = document.querySelector('.cart-toggle-btn');
+            if (p && p.classList.contains('show') && !p.contains(e.target) && t && !t.contains(e.target)) {
+                this.hideCart();
             }
         });
     }
 }
 
 const cartBottom = new CartBottom();
+function toggleCart() { cartBottom.toggleCart(); }
 
-function toggleCart() {
-    cartBottom.toggleCart();
+/* ============================================================
+   15. CART PAGE LOGIC
+============================================================ */
+function renderCart() {
+    const cart      = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    const container = document.querySelector('.cart-items-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (cart.length === 0) {
+        container.innerHTML = `
+            <div style="text-align:center;padding:40px;">
+                <h3>Your bag is empty</h3>
+                <a href="#" onclick="showPage('page-index');return false;"
+                   style="color:#4f6bf5;text-decoration:underline;font-weight:bold;">Go Shopping</a>
+            </div>`;
+        return;
+    }
+
+    cart.forEach((item, index) => {
+        const imgSrc = item.image || 'https://via.placeholder.com/150';
+        container.innerHTML += `
+        <div class="cart-item-full">
+            <div class="cart-item-img"><img src="${imgSrc}" alt="${item.name}"></div>
+            <div class="cart-item-info-full">
+                <div class="item-top-row">
+                    <span class="item-title">${item.name}</span>
+                    <span class="item-price">$${item.price.toFixed(2)}</span>
+                </div>
+                <span class="item-subtitle">Size: ${item.size}</span>
+                <span class="item-subtitle">Color: ${item.color || 'Standard'}</span>
+                <div class="item-controls">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <label>Qty:</label>
+                        <select class="cart-select" onchange="updateQuantity(${index}, this.value)">
+                            ${renderQtyOptions(item.quantity)}
+                        </select>
+                    </div>
+                </div>
+                <div class="item-actions-full">
+                    <i class="fa-regular fa-trash-can action-icon" onclick="removeItem(${index})" title="Remove"></i>
+                </div>
+            </div>
+        </div>`;
+    });
 }
+
+function renderQtyOptions(selected) {
+    let opts = '';
+    for (let i = 1; i <= 10; i++) opts += `<option value="${i}" ${i == selected ? 'selected' : ''}>${i}</option>`;
+    return opts;
+}
+
+function updateQuantity(index, newQty) {
+    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    cart[index].quantity = parseInt(newQty);
+    localStorage.setItem('shoppingCart', JSON.stringify(cart));
+    syncCartToUser(); // ✅ sync
+    renderCart();
+    updateCartSummary();
+}
+
+function removeItem(index) {
+    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    cart.splice(index, 1);
+    localStorage.setItem('shoppingCart', JSON.stringify(cart));
+    syncCartToUser(); // ✅ sync
+    renderCart();
+    updateCartSummary();
+}
+
+function updateCartSummary() {
+    const cart       = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    const totalItems = cart.reduce((s,i) => s + i.quantity, 0);
+    const subtotal   = cart.reduce((s,i) => s + (i.price * i.quantity), 0);
+    const shipping   = cart.length > 0 ? 6.99 : 0;
+    const total      = subtotal + shipping;
+
+    const elItems    = document.getElementById('summary-total-items');
+    const elPrice    = document.getElementById('summary-total-price');
+    const elTotal    = document.getElementById('summary-final-total');
+    const elCount    = document.getElementById('cart-page-count');
+
+    if (elItems) elItems.innerText = `${totalItems} ITEMS`;
+    if (elPrice) elPrice.innerText = `$${subtotal.toFixed(2)}`;
+    if (elTotal) elTotal.innerText = `$${total.toFixed(2)}`;
+    if (elCount) elCount.innerText = totalItems;
+}
+
+/* ============================================================
+   16. CHECKOUT SLIDE
+============================================================ */
+let checkoutSelectedAddressIndex = -1; // -1 = using new address form
+
+function openCheckoutSlide() {
+    const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    if (cart.length === 0) { alert('Giỏ hàng trống!'); return; }
+
+    renderCheckoutMiniItems(cart);
+    renderCheckoutAddressSection();
+
+    document.getElementById('checkout-panel').classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser) {
+        const emailField = document.getElementById('checkout-email');
+        if (emailField) emailField.value = currentUser.email || '';
+    }
+}
+
+function renderCheckoutAddressSection() {
+    const container = document.getElementById('checkout-address-section');
+    if (!container) return;
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) { container.innerHTML = ''; return; }
+
+    const users    = getUsers();
+    const userObj  = users.find(u => u.id === currentUser.id);
+    const addresses = userObj?.address || [];
+
+    // Find default or use first
+    const defaultIdx = addresses.findIndex(a => a.isDefault);
+    checkoutSelectedAddressIndex = defaultIdx !== -1 ? defaultIdx : (addresses.length > 0 ? 0 : -1);
+
+    if (addresses.length === 0) {
+        // No address → show form directly
+        container.innerHTML = buildNewAddressForm(true);
+        return;
+    }
+
+    // Has addresses → show ol list + "New address?" button
+    const items = addresses.map((addr, i) => `
+        <li id="co-addr-item-${i}" onclick="selectCheckoutAddress(${i})"
+            style="padding:12px 16px;border:2px solid ${i === checkoutSelectedAddressIndex ? '#4f6bf5' : '#e0e0e0'};
+                   border-radius:10px;margin-bottom:8px;cursor:pointer;
+                   background:${i === checkoutSelectedAddressIndex ? '#f0f4ff' : '#fff'};
+                   transition:all 0.2s;display:flex;align-items:flex-start;gap:10px;">
+            <span style="margin-top:2px;font-size:18px;">${i === checkoutSelectedAddressIndex ? '🔵' : '⚪'}</span>
+            <div>
+                <div style="font-weight:700;font-size:12px;color:#888;text-transform:uppercase;margin-bottom:3px;">
+                    ${addr.type}${addr.isDefault ? ' <span style="background:#4f6bf5;color:#fff;padding:1px 7px;border-radius:20px;font-size:11px;margin-left:4px;">Default</span>' : ''}
+                </div>
+                <div style="font-size:14px;color:#222;">${addr.content}</div>
+            </div>
+        </li>`).join('');
+
+    container.innerHTML = `
+        <h4 style="font-weight:700;margin-bottom:12px;">Shipping Address</h4>
+        <ol style="list-style:none;padding:0;margin-bottom:10px;">${items}</ol>
+        <button type="button" onclick="toggleCheckoutNewAddrForm()"
+            id="btn-co-new-addr"
+            style="background:none;border:2px dashed #ccc;border-radius:10px;width:100%;
+                   padding:10px;color:#888;font-weight:600;font-size:13px;cursor:pointer;margin-bottom:4px;">
+            + New address?
+        </button>
+        <div id="co-new-addr-form" style="display:none;margin-top:8px;">
+            ${buildNewAddressForm(false)}
+        </div>`;
+}
+
+function buildNewAddressForm(standalone) {
+    return `
+        <div style="${standalone ? '' : ''}">
+            ${standalone ? '<h4 style="font-weight:700;margin-bottom:12px;">Add a Shipping Address</h4>' : ''}
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+                <input id="co-new-addr-type" type="text" placeholder="Type (e.g. Home)"
+                    style="flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;">
+                <input id="co-new-addr-content" type="text" placeholder="Full delivery address*"
+                    style="flex:2;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;">
+            </div>
+            <button type="button" onclick="saveAndUseNewCheckoutAddress()"
+                style="background:#222;color:#fff;border:none;padding:10px 20px;
+                       border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;width:100%;">
+                Use this address & Save
+            </button>
+        </div>`;
+}
+
+function selectCheckoutAddress(index) {
+    checkoutSelectedAddressIndex = index;
+    // Re-render address list to update highlight
+    renderCheckoutAddressSection();
+    // Hide new-addr form if it was open
+    const form = document.getElementById('co-new-addr-form');
+    if (form) form.style.display = 'none';
+}
+
+function toggleCheckoutNewAddrForm() {
+    const form = document.getElementById('co-new-addr-form');
+    if (form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveAndUseNewCheckoutAddress() {
+    const typeInput    = document.getElementById('co-new-addr-type');
+    const contentInput = document.getElementById('co-new-addr-content');
+    const type    = typeInput?.value.trim() || 'Home';
+    const content = contentInput?.value.trim();
+    if (!content) { showToast('<span>Please enter a delivery address!</span>', 'error'); return; }
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return;
+    const users = getUsers();
+    const idx   = users.findIndex(u => u.id === currentUser.id);
+    if (idx === -1) return;
+
+    if (!Array.isArray(users[idx].address)) users[idx].address = [];
+
+    // Set all existing as non-default, new one as default
+    users[idx].address.forEach(a => a.isDefault = false);
+    const newAddr = { id: 'addr_' + Date.now(), type, content, isDefault: true };
+    users[idx].address.push(newAddr);
+    localStorage.setItem('users', JSON.stringify(users));
+
+    checkoutSelectedAddressIndex = users[idx].address.length - 1;
+    showToast('<span>Address saved & selected! ✓</span>', 'success');
+    renderCheckoutAddressSection();
+}
+
+function closeCheckout() {
+    document.getElementById('checkout-panel').classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+function renderCheckoutMiniItems(cart) {
+    const container = document.getElementById('checkout-items-list');
+    if (!container) return;
+    let subtotal = 0, html = '';
+
+    cart.forEach(item => {
+        subtotal += item.price * item.quantity;
+        const imgSrc = item.image || 'https://via.placeholder.com/150';
+        html += `
+            <div class="co-item">
+                <div class="co-img"><img src="${imgSrc}" alt="${item.name}"></div>
+                <div class="co-info">
+                    <div class="co-name">${item.name}</div>
+                    <span class="co-sub">Size: ${item.size} | Qty: ${item.quantity}</span>
+                    <span class="co-price">$${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+            </div>`;
+    });
+
+    container.innerHTML = html;
+    const shipping = 6.00;
+    document.getElementById('co-total-items').innerText  = `${cart.length} ITEMS`;
+    document.getElementById('co-subtotal').innerText     = `$${subtotal.toFixed(2)}`;
+    document.getElementById('co-final-total').innerText  = `$${(subtotal + shipping).toFixed(2)}`;
+}
+
+function generateOrderId() {
+    return 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+}
+
+function processPayment() {
+    // ✅ KIỂM TRA ĐĂNG NHẬP
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+        alert('Bạn cần đăng nhập trước khi thanh toán!');
+        closeCheckout();
+        openAuthModal('login');
+        return;
+    }
+
+    const cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    if (cart.length === 0) { alert('Giỏ hàng trống!'); return; }
+
+    // ✅ RESOLVE SHIPPING ADDRESS
+    const users   = getUsers();
+    const userIdx = users.findIndex(u => u.id === currentUser.id);
+    const addresses = userIdx !== -1 ? (users[userIdx].address || []) : [];
+
+    let shippingAddress = '';
+    if (checkoutSelectedAddressIndex >= 0 && addresses[checkoutSelectedAddressIndex]) {
+        shippingAddress = addresses[checkoutSelectedAddressIndex].content;
+        // Make selected address the new default
+        addresses.forEach((a, i) => a.isDefault = (i === checkoutSelectedAddressIndex));
+        if (userIdx !== -1) {
+            users[userIdx].address = addresses;
+        }
+    } else {
+        // Fallback: try new address form
+        const newContent = document.getElementById('co-new-addr-content')?.value.trim();
+        if (!newContent) {
+            showToast('<span>Please select or add a delivery address!</span>', 'error', 3500);
+            return;
+        }
+        const newType = document.getElementById('co-new-addr-type')?.value.trim() || 'Home';
+        // Save and set as default
+        addresses.forEach(a => a.isDefault = false);
+        const saved = { id: 'addr_' + Date.now(), type: newType, content: newContent, isDefault: true };
+        addresses.push(saved);
+        shippingAddress = newContent;
+        if (userIdx !== -1) users[userIdx].address = addresses;
+    }
+
+    const subtotal = cart.reduce((s,i) => s + (i.price * i.quantity), 0);
+    const total    = subtotal + 6.00;
+
+    const newOrder = {
+        orderId:         generateOrderId(),
+        userId:          currentUser.id,
+        customerName:    currentUser.name,
+        email:           document.getElementById('checkout-email')?.value || currentUser.email || 'No Email',
+        date:            new Date().toISOString(),
+        items:           cart,
+        totalPrice:      total,
+        status:          'Pending',
+        shippingAddress
+    };
+
+    // Lưu vào allOrders (Admin dùng)
+    const allOrders = JSON.parse(localStorage.getItem('allOrders')) || [];
+    allOrders.push(newOrder);
+    localStorage.setItem('allOrders', JSON.stringify(allOrders));
+
+    // Lưu order vào users[] + xóa cart + cập nhật address default
+    if (userIdx !== -1) {
+        if (!users[userIdx].orders) users[userIdx].orders = [];
+        users[userIdx].orders.push(newOrder);
+        users[userIdx].cart = [];
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    localStorage.removeItem('shoppingCart');
+
+    closeCheckout();
+    renderCart();
+    updateCartSummary();
+    cartBottom.renderCart();
+    updateCartIconCount();
+
+    showToast(`
+        <div class="kicks-toast-body">
+            <span class="kicks-toast-title">🎉 Payment Successful!</span>
+            <span class="kicks-toast-msg">${newOrder.orderId}</span>
+            <span style="font-size:12px;opacity:0.65;font-weight:500;">Total: $${total.toFixed(2)}</span>
+        </div>
+    `, 'success', 5000);
+}
+
+/* ============================================================
+   17. MODAL: ESC + CLICK-OUTSIDE
+============================================================ */
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        closeProfileModal();
+        closeAuthModal();
+        closeCheckout();
+    }
+});
+document.getElementById('profile-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeProfileModal();
+});
+document.getElementById('auth-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeAuthModal();
+});
+
+/* ============================================================
+   18. INIT
+============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    loadCartFromUser();      // Load cart của user đang đăng nhập
+    updateHeaderGreeting();
+    updateCartIconCount();
+    cartBottom.renderCart();
+    renderProductGrid();     // Render grid sản phẩm
+    renderNewDrops();        // Render new drops
+    // Không gọi renderProductDetail ở đây → tránh scroll khi F5
+});

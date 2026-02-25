@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KICKS - Sneaker Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+   
+    </link>
+</head>
+<body>
+
+<div id="page-index" class="page-section active">
+    <div class="container">
+        <header>
+            <nav class="nav-links">
+                <a href="#">New Drops 🔥</a>
+                <a href="#">Men ▾</a>
+                <a href="#">Women ▾</a>
+            </nav>
+            <img class="img-logo" src="./../../../res/images/logoKick.png" alt="KICKS Logo" onclick="void(0)" style="cursor:pointer; transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.3)'" onmouseout="this.style.transform='scale(1)'">
+            <div class="user-actions" style="display:flex;align-items:center;gap:20px;">
+                <i class="fas fa-search" style="cursor:pointer;"></i>
+                <div class="user-profile-header" style="display:flex;align-items:center;gap:8px;">
+                    <i class="fas fa-user" id="header-user-icon" style="cursor:pointer;"></i>
+                    <span id="header-greeting" style="font-size:14px;font-weight:600;"></span>
+                </div>
+                <i class="fas fa-shopping-cart" onclick="showPage('page-cart')" style="cursor:pointer;position:relative;"></i>
+                <span class="cart-count" id="main-cart-count" style="display:none;">0</span>
+            </div>
+        </header>
+
+        <h1 class="hero-title">DO IT <span class="highlight-blue">RIGHT</span></h1>
+
+        <div class="banner-wrapper">
+            <div class="banner-img"></div>
+            <div class="vertical-text">Nike product of the year</div>
+            <div class="banner-content">
+                <h2>Nike Air Max</h2>
+                <p>Nike introducing the new air max for everyone's comfort</p>
+                <button class="btn-shop">Shop Now</button>
+            </div>
+            <div class="thumbnails">
+                <div class="thumb-item"><img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=400&auto=format&fit=crop" alt="Shoe 1"></div>
+                <div class="thumb-item"><img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?q=80&w=400&auto=format&fit=crop" alt="Shoe 2"></div>
+            </div>
+        </div>
+
+        <section class="new-drops-section">
+            <div class="container">
+                <div class="new-drops-header">
+                    <h2 class="section-title">DON'T MISS OUT<br>NEW DROPS</h2>
+                    <a href="#" class="btn-shop-new">SHOP NEW DROPS</a>
+                </div>
+                <div id="new-drops-grid" class="new-drops-grid"></div>
+            </div>
+        </section>
+    </div>
+
+    <section id="product-detail-section"></section>
+
+    <div class="shop-container">
+        <aside class="sidebar">
+            <div class="filter-header"><h3>Filters</h3></div>
+            <div class="filter-group">
+                <h4>Refine by</h4>
+                <div class="refine-tags"><span class="tag-pill active">Mens</span><span class="tag-pill active">Casual</span></div>
+            </div>
+            <div class="filter-group">
+                <h4>Size</h4>
+                <div class="size-filter-grid">
+                    <button class="filter-size-btn" onclick="toggleFilter('size',38)">38</button>
+                    <button class="filter-size-btn" onclick="toggleFilter('size',39)">39</button>
+                    <button class="filter-size-btn" onclick="toggleFilter('size',40)">40</button>
+                    <button class="filter-size-btn" onclick="toggleFilter('size',41)">41</button>
+                    <button class="filter-size-btn" onclick="toggleFilter('size',42)">42</button>
+                    <button class="filter-size-btn" onclick="toggleFilter('size',43)">43</button>
+                    <button class="filter-size-btn" onclick="toggleFilter('size',44)">44</button>
+                    <button class="filter-size-btn" onclick="toggleFilter('size',45)">45</button>
+                </div>
+            </div>
+            <div class="filter-group">
+                <h4>Color</h4>
+                <div class="color-filter-grid">
+                    <div class="filter-color-btn" style="background-color:#4f6bf5;" onclick="toggleFilter('color','#4f6bf5',this)"></div>
+                    <div class="filter-color-btn" style="background-color:#ffaa00;" onclick="toggleFilter('color','#ffaa00',this)"></div>
+                    <div class="filter-color-btn" style="background-color:#222222;" onclick="toggleFilter('color','#222222',this)"></div>
+                    <div class="filter-color-btn" style="background-color:#1a4d2e;" onclick="toggleFilter('color','#1a4d2e',this)"></div>
+                    <div class="filter-color-btn" style="background-color:#555555;" onclick="toggleFilter('color','#555555',this)"></div>
+                    <div class="filter-color-btn" style="background-color:#FFFFFF;border:1px solid #ccc;" onclick="toggleFilter('color','#FFFFFF',this)"></div>
+                </div>
+            </div>
+            <div class="filter-group">
+                <h4>Brand</h4>
+                <div class="checkbox-list">
+                    <label class="custom-checkbox"><input type="checkbox" value="Nike" onchange="toggleFilter('brand','Nike')"> Nike</label>
+                    <label class="custom-checkbox"><input type="checkbox" value="Adidas" onchange="toggleFilter('brand','Adidas')"> Adidas</label>
+                    <label class="custom-checkbox"><input type="checkbox" value="Jordan" onchange="toggleFilter('brand','Jordan')"> Jordan</label>
+                    <label class="custom-checkbox"><input type="checkbox" value="Puma" onchange="toggleFilter('brand','Puma')"> Puma</label>
+                </div>
+            </div>
+            <div class="filter-group" style="border:none;">
+                <h4>Price</h4>
+                <input type="range" id="priceRange" min="0" max="1000" value="1000" step="10" oninput="updatePrice(this.value)">
+                <div class="price-labels"><span>$0</span> <span id="priceValue" style="font-weight:bold;">$1000</span></div>
+            </div>
+        </aside>
+        <main class="main-content">
+            <div class="content-header">
+                <h2 class="section-title">Life Style Shoes</h2>
+                <span id="product-count" style="color:#666;">(0 items)</span>
+            </div>
+            <div class="product-grid" id="grid-container"></div>
+            <div id="pagination" class="pagination-container"></div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="newsletter-wrap">
+            <div class="container newsletter-inner">
+                <div class="newsletter-content">
+                    <h2>JOIN OUR KICKSPLUS CLUB & GET 15% OFF</h2>
+                    <p>Sign up for free! Join the community.</p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Email address" class="email-input">
+                        <button class="btn-submit">SUBMIT</button>
+                    </div>
+                </div>
+                <div class="newsletter-logo"><span class="logo-text">KICKS</span><span class="logo-plus">+</span></div>
+            </div>
+        </div>
+        <div class="footer-main-wrap">
+            <div class="container footer-inner">
+                <div class="footer-grid">
+                    <div class="footer-col about-col"><h3>About us</h3><p>We are the biggest hyperstore in the universe. We got you all cover with our exclusive collections and latest drops.</p></div>
+                    <div class="footer-col"><h3>Categories</h3><ul class="footer-links"><li><a href="#">Runners</a></li><li><a href="#">Sneakers</a></li><li><a href="#">Basketball</a></li><li><a href="#">Outdoor</a></li><li><a href="#">Golf</a></li><li><a href="#">Hiking</a></li></ul></div>
+                    <div class="footer-col"><h3>Company</h3><ul class="footer-links"><li><a href="#">About</a></li><li><a href="#">Contact</a></li><li><a href="#">Blogs</a></li></ul></div>
+                    <div class="footer-col"><h3>Follow us</h3><div class="social-icons"><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-tiktok"></i></a></div></div>
+                </div>
+                <div class="big-footer-text">KICKS</div>
+                <div class="copyright">© All rights reserved | Made with ❤️ by Visiata Systems International</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Cart Button -->
+    <button class="cart-toggle-btn" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="badge" id="cartBadge">0</span>
+    </button>
+    <div class="cart-bottom" id="cartPanel">
+        <div class="cart-bottom-header">
+            <h3>Giỏ hàng của bạn</h3>
+            <button class="close-cart" onclick="cartBottom.hideCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items-list" id="cartItemsList"></div>
+        <div class="cart-bottom-footer">
+            <div class="cart-total"><span>Tổng tiền:</span><span id="cartTotal">$0.00</span></div>
+            <a href="#" class="view-cart-link" onclick="showPage('page-cart'); cartBottom.hideCart(); return false;">
+                <span>→ Xem giỏ hàng</span><i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     CART PAGE
+============================================================ -->
+<div id="page-cart" class="page-section">
+    <div class="cart-page-wrapper">
+        <div class="cart-container-page">
+            <header>
+                <nav class="nav-links">
+                    <a href="#" onclick="showPage('page-index');return false;">New Drops 🔥</a>
+                    <a href="#">Men ▾</a>
+                    <a href="#">Women ▾</a>
+                </nav>
+                <img class="img-logo" src="https://via.placeholder.com/120x40/222222/ffffff?text=KICKS" alt="KICKS Logo" onclick="showPage('page-index')" style="cursor:pointer;">
+                <div class="user-actions" style="display:flex;align-items:center;gap:20px;">
+                    <i class="fas fa-user" id="cart-page-user-icon" style="cursor:pointer;" onclick="openProfileModal()"></i>
+                    <span id="cart-page-greeting" style="font-size:14px;font-weight:600;"></span>
+                    <i class="fas fa-shopping-cart" onclick="showPage('page-cart')" style="cursor:pointer;"></i>
+                    <span class="cart-count" id="cart-page-count">0</span>
+                </div>
+            </header>
+
+            <h1 class="hero-title" style="font-size:60px;">DO IT <span class="highlight-blue">RIGHT</span></h1>
+
+            <div class="promo-banner">
+                <h2>Saving to celebrate</h2>
+                <p>Enjoy up to 60% off thousands of styles during the End of Year sale - while supplies last. No code needed.</p>
+                <a href="#">Join us</a> or <a href="#" onclick="openAuthModal('login');return false;">Sign-in</a>
+            </div>
+
+            <div class="cart-layout">
+                <div class="cart-bag-section">
+                    <div class="cart-header">
+                        <h2>Your Bag</h2>
+                        <p>Items in your bag not reserved - check out now to make them yours.</p>
+                    </div>
+                    <div class="cart-items-container"></div>
+                </div>
+                <div class="cart-summary-section">
+                    <h2>Order Summary</h2>
+                    <div class="summary-row"><span id="summary-total-items">0 ITEMS</span><span id="summary-total-price">$0.00</span></div>
+                    <div class="summary-row"><span>Delivery</span><span>$6.99</span></div>
+                    <div class="summary-row"><span>Sales Tax</span><span>-</span></div>
+                    <div class="summary-row total"><span>Total</span><span id="summary-final-total">$0.00</span></div>
+                    <button class="btn-checkout">CHECKOUT</button>
+                    <a href="#" class="promo-link">Use a promo code</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer-section">
+            <div class="newsletter-wrap">
+                <div class="container newsletter-inner">
+                    <div class="newsletter-content">
+                        <h2>JOIN OUR KICKSPLUS CLUB & GET 15% OFF</h2>
+                        <p>Sign up for free! Join the community.</p>
+                        <div class="newsletter-form"><input type="email" placeholder="Email address" class="email-input"><button class="btn-submit">SUBMIT</button></div>
+                    </div>
+                    <div class="newsletter-logo"><span class="logo-text">KICKS</span><span class="logo-plus">+</span></div>
+                </div>
+            </div>
+            <div class="footer-main-wrap">
+                <div class="container footer-inner">
+                    <div class="big-footer-text">KICKS</div>
+                    <div class="copyright">© All rights reserved | Made with ❤️ by Visiata Systems International</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Checkout Panel -->
+    <div id="checkout-panel" class="checkout-panel">
+        <div class="checkout-container">
+            <div class="checkout-header">
+                <button class="back-btn-checkout" onclick="closeCheckout()"><i class="fas fa-arrow-left"></i> Back</button>
+                <div class="checkout-logo">KICKS</div>
+                <div style="width:50px;"></div>
+            </div>
+            <div class="checkout-body">
+                <div class="checkout-form-section">
+                    <h3>Login and Checkout faster</h3>
+                    <div class="form-group">
+                        <h4>Contact Details</h4>
+                        <p class="sub-text">We will use these details to keep you informed about your delivery.</p>
+                        <input type="email" class="input-field" placeholder="Email" id="checkout-email">
+                    </div>
+                    <!-- Dynamic address section rendered by JS -->
+                    <div id="checkout-address-section" class="form-group"></div>
+                    <div class="form-group">
+                        <h4>Delivery Options</h4>
+                        <div class="delivery-option selected">
+                            <div class="d-info"><span class="d-title">Standard Delivery</span><span class="d-desc">Enter your address to see when you'll get your order</span></div>
+                            <span class="d-price">$6.00</span>
+                        </div>
+                        <div class="delivery-option">
+                            <div class="d-info"><span class="d-title">Collect in store</span><span class="d-desc">Pay now, collect in store</span></div>
+                            <span class="d-price">Free</span>
+                        </div>
+                    </div>
+                    <button class="btn-pay" onclick="processPayment()">REVIEW AND PAY</button>
+                </div>
+                <div class="checkout-summary-section">
+                    <div class="summary-card">
+                        <h4>Order Summary</h4>
+                        <div class="summary-row"><span id="co-total-items">0 ITEM</span><span id="co-subtotal">$0.00</span></div>
+                        <div class="summary-row"><span>Delivery</span><span>$6.00</span></div>
+                        <div class="summary-row total"><span>Total</span><span id="co-final-total">$0.00</span></div>
+                    </div>
+                    <div class="details-card"><h4>Order Details</h4><div id="checkout-items-list"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     AUTH MODAL
+============================================================ -->
+<div class="modal-overlay" id="auth-modal">
+    <div class="auth-modal">
+        <div class="auth-left"><h1>KICKS</h1></div>
+        <div class="auth-right">
+            <button class="modal-close-btn" onclick="closeAuthModal()"><i class="fas fa-times"></i></button>
+            <div class="auth-box">
+                <div class="login-container" id="login-container">
+                    <h2>Login</h2>
+                    <a href="#">Forgot your password?</a>
+                    <form id="login-form">
+                        <input type="email" placeholder="Email" required />
+                        <input type="password" placeholder="Password" required />
+                        <input type="submit" value="Login" />
+                    </form>
+                    <p>Don't have an account? <button class="toggle-btn" onclick="toggleAuthForm('register')">Register</button></p>
+                </div>
+                <div class="register-container hidden" id="register-container">
+                    <h2>Register</h2>
+                    <form id="register-form">
+                        <input type="text" placeholder="Full Name" required />
+                        <input type="email" placeholder="Email" required />
+                        <input type="password" placeholder="Password" required />
+                        <input type="password" placeholder="Confirm Password" required />
+                        <input type="submit" value="Register" />
+                    </form>
+                    <p>Already have an account? <button class="toggle-btn" onclick="toggleAuthForm('login')">Login</button></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     PROFILE MODAL
+============================================================ -->
+<div class="profile-overlay" id="profile-modal">
+    <div class="profile-modal">
+        <div class="profile-modal-header">
+            <h1>MY ACCOUNT</h1>
+            <button class="profile-modal-close" onclick="closeProfileModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="profile-modal-body">
+            <div class="profile-layout">
+                <div class="profile-sidebar">
+                    <div class="user-brief">
+                        <div class="avatar"><i class="fas fa-user-circle"></i></div>
+                        <h3 id="display-user-name">Loading...</h3>
+                    </div>
+                    <ul class="profile-nav">
+                        <li class="active" onclick="switchTab(event,'info')"><i class="fas fa-user-edit"></i> Account Details</li>
+                        <li onclick="switchTab(event,'orders')"><i class="fas fa-box-open"></i> My Orders</li>
+                        <li onclick="logoutUser()" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</li>
+                    </ul>
+                </div>
+                <div class="profile-content">
+                    <div id="tab-info" class="tab-pane active">
+                        <h2>Account Details</h2>
+                        <p class="text-muted">View and edit your personal info below.</p>
+                        <form id="profile-form">
+                            <div class="form-group"><label>Full Name</label><input type="text" id="prof-name" required></div>
+                            <div class="form-group"><label>Email Address (Cannot be changed)</label><input type="email" id="prof-email" readonly style="background:#f5f5f5;"></div>
+                            <div class="form-group">
+                                <label>Shipping Addresses</label>
+                                <div id="prof-address-list"></div>
+                            </div>
+                            <div class="form-group"><label>New Password (Leave blank to keep current)</label><input type="password" id="prof-password" placeholder="Enter new password"></div>
+                            <button type="submit" class="btn-save">SAVE CHANGES</button>
+                        </form>
+                    </div>
+                    <div id="tab-orders" class="tab-pane">
+                        <h2>Order History</h2>
+                        <p class="text-muted">Check the status of your recent orders.</p>
+                        <div id="orders-list-container" class="orders-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="index.js"></script>
+</body>
+</html>
